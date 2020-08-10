@@ -1,0 +1,154 @@
+\documentclass[12pt, oneside]{article}
+
+\usepackage[left=2.5cm, top=2.5cm, bottom=2.5cm, right=2.5cm]{geometry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{polski}
+\usepackage[polish]{babel}
+
+% temporarily for dark background
+\usepackage{xcolor}
+\definecolor{mybackground}{rgb}{0.15, 0.15, 0.13}
+\definecolor{mytext}{rgb}{0.94, 0.94, 0.92}
+% \pagecolor{mybackground}
+% \color{mytext}
+
+\begin{document}  
+\thispagestyle{empty}
+\begin{titlepage}
+    \begin{center}
+
+      \Large
+	    \textbf{Uniwersytet Jagielloński w Krakowie}\vspace{0.2cm}\\ Wydział Fizyki, Astronomii i Informatyki Stosowanej
+      \vspace*{1cm}
+               
+      \vspace{3cm}
+      \Large
+      \textbf{Wojciech Lepich}\\\vspace{0.5cm}
+      \normalsize Nr albumu: 1146600\\
+      \vspace{2cm}
+      \Huge
+      \textbf{Rozpoznawanie cyfr przez sieć neuronową zaimplementowaną na układzie FPGA}
+      
+      \vspace{1.5cm}
+      \normalsize
+      Praca licencjacka\\
+      na kierunku Informatyka\\ \vspace{0.15cm}
+        
+      \vfill
+      \vspace{2cm}
+      \begin{minipage}{1\textwidth}
+\begin{flushright}
+Praca wykonana pod kierunkiem\\
+dr. Grzegorza Korcyla\\
+z Zakładu Technologii Informatycznych
+\end{flushright}
+\end{minipage}
+        
+        \vspace{2cm}
+        \begin{center}
+      Kraków 2020
+        \end{center}
+    \end{center}
+\end{titlepage}
+
+\newpage 
+\thispagestyle{empty}
+\vspace{2.5cm}
+\begin{flushleft}
+\large \textbf{Oświadczenie autora pracy}\vspace{0.6cm}\\
+\end{flushleft}
+
+\noindent Świadom odpowiedzialności prawnej oświadczam, że niniejsza praca dyplomowa została napisana przeze mnie samodzielnie i nie zawiera treści uzyskanych w sposób niezgodny z obowiązującymi przepisami.\\
+
+\noindent Oświadczam również, że przedstawiona praca nie była wcześniej przedmiotem procedur związanych z uzyskaniem tytułu zawodowego w wyższej uczelni.
+\vspace{2cm}
+\begin{center}
+\begin{tabular}{lr}
+\ldots\ldots\ldots\ldots\ldots\ldots~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&
+\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots \\
+{~~~~Kraków, dnia} & {Podpis autora pracy~~~~}
+\end{tabular}
+\end{center}
+\vspace{5cm}
+\begin{flushleft}
+\large \textbf{Oświadczenie kierującego pracą}
+\end{flushleft}
+
+\noindent Potwierdzam, że niniejsza praca została przygotowana pod moim kierunkiem i~kwalifikuje się do przedstawienia jej w postępowaniu o nadanie tytułu zawodowego.
+\vspace{2cm}
+\begin{center}
+\begin{tabular}{lr}
+\ldots\ldots\ldots\ldots\ldots\ldots~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~&
+\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots \\
+{~~~~Kraków, dnia} & {Podpis kierującego pracą~~}
+\end{tabular}
+\end{center}
+\vfill
+
+\newpage
+\tableofcontents
+
+\newpage
+\section{Teoria}
+\subsection{Architektura FPGA}
+Tutaj jakieś rzeczy o architekturze FPGA --- pokrótce co to w ogóle jest.
+
+\subsection{Przetwarzanie obrazu}
+Formaty pikseli, jak są zbudowane, lorem ipsum.
+
+\subsection{Sieci neuronowe}
+Z czym się to je, jak działają, jak wygląda trenowanie
+
+\newpage
+\section{Opis projektu (?)}
+
+\subsection{Zarys projektu}
+Jakich narzędzi korzystałem, co chcę osiągnąć, elo 420.
+
+\subsection{Sieć neuronowa}
+Jak jest zbudowana, jak uczona, dlaczego taka a nie inna; problemy z LeNet-5
+
+\subsection{hls4ml}
+A co to za framework i dlaczego taki fajny, dostosowanie precyzji z profiling
+Tutaj też dopisz o dostosowaniu sieci, tzn.\ o progu
+
+\subsection{Gstreamer}
+Do czego służy, jaki zbudowałem pipeline
+
+\subsection{Używanie sieci}
+Czyli synteza sieci i zrobienie z niej biblioteki statycznej „.a” 
+
+\subsection{Część neuralnet}
+Czytanie obrazu, podział na część luma i chroma, wywołanie funkcji sieci,
+zapis z powrotem, synteza do biblioteki dzielonej „.so”
+
+\subsection{Część gstsdxnet}
+De facto plugin gstreamera, w którym są wywoływane funkcje z biblioteki
+dzielonej neuralnet.so, 
+
+\subsection{Małe podsumowanie}
+
+
+\newpage
+\section{Wyniki i dyskusja}
+
+\subsection{Ewaulacja modelu}
+Wyniki z samego pythona z danymi testowymi z mnista
+
+\subsection{Symulacja}
+Tutaj wyniki z symulacji z danymi testowymi z mnista
+
+\subsection{Dane rzeczywiste}
+No i tutaj wyniki z kamerki. Myślę, że nie trzeba robić jakichś spisów wielkich,
+wystarczy opisać co dobrze odczytało, co źle, dlaczego, jakie sieć ma problemy,
+przygotowanie danych (zdjęcia!), jak poprawić skuteczność działania (LeNet xD)
+
+\newpage
+\section{Podsumowanie}
+W projekcie zostało zrobione to i to. Wyszło to tak i tak. Problem sprawiło
+tamto i owamto. Można to poprawić w ten sposób. Można część funkcjonalności
+z pipeline przenieść na fpga (sam pisałem, że przetwarzanie obrazu na fpga
+jest gicior).
+
+\end{document}

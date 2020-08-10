@@ -1,0 +1,24 @@
+1. strona tytułowa
+2. Oświadczenie
+3. Spis treści
+4 Praca:
+    I wstęp:
+    Dlaczego przetwarzanie obrazu i sieci neuronowe na fpga
+
+    II Teoria
+    1. Architektura FPGA
+    2. O przetwarzaniu obrazu (formaty pikseli, itd.)
+    3. Sieci neuronowe
+
+    III Projekt
+    1. Zarys projektu
+    2. Wykorzystana sieć (jak zbudowana, jak uczona, dlaczego nie większa - o problemach z lenetem)
+    3. hls4ml i dostosowanie sieci: działanie hls4ml, interfejs budowanego układu-sieci, dobieranie precyzji wag, i danych z hls4ml.profiling
+    4. pipeline z gstreamer, krótko zasada działania gstreamer, z jakich elementów składa się wykorzystany pipeline
+    5. jak ze zsyntetyzowanej sieci zrobić bibliotekę statyczną do wykorzystania w aplikacji pisanej w SDSoC (czyli plugin do gstreamera)
+    6. Opisanie gotowej całości, gdzie i jak jest ta sieć uruchamiana w projekcie
+
+    IV Wyniki i dyskusja
+    1. Wyniki symulacji na testowych danych z mnist
+    2. Wyniki na sprzęcie z cyframi z kartki (+ dlaczego nie jest tak dobrze)
+5. Podsumowanie
