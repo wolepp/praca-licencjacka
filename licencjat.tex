@@ -113,11 +113,41 @@ Flip Flop (przechowują wynik LUT), BRAM (block RAM, pamięć dwuportowa,
 jest w stanie przechowywać względnie dużą ilość danych).
 
 Układy FPGA przeważnie pracują na kilku-, kilkunastukrotnie niższych
-częstotliwościach niż CPU. \todo{Przypis}Wysoką wydajność zawdzięczają
+częstotliwościach niż CPU. \todo{Przypis} Wysoką wydajność zawdzięczają
 zrównolegleniu obliczeń.
 
 \subsection{Przetwarzanie obrazu}
-Formaty pikseli, jak są zbudowane, lorem ipsum.
+Cyfrowe przetwarzanie obrazu jest problemem wymagającym dużych mocy
+obliczeniowych ze względu na ilość danych do przetworzenia. Nieskompresowany
+kolorowy obraz z pikselami w formacie RGB (po 8 bitów na kolor) o wysokości
+720 pikseli i szerokości 1280 pikseli to 22118400 bitów (\(\approx \) 2,5MB). Obraz
+przetwarzany w czasie rzeczywistym, na przykład z kamery, zwielokrotnia tę
+liczbę o liczbę klatek na sekundę (przy trzydziestu klatkach na sekundę liczba
+danych rośnie do około 79 megabajtów na sekundę). Należy również pamiętać, że
+dane są dwuwymiarowe co jest ważne przy problemach związanych z rozpoznawaniem
+wzorców, klasyfikacją przedmiotów na obrazie, filtrowania w celu rozmazania lub
+wyostrzenia obrazów, itp.
+
+\subsubsection{Formaty pikseli}
+Jest wiele modeli przestrzeni barw (a co za tym idzie, sposobów kodowania
+pikseli) między innymi:
+\begin{itemize}
+  \item RGB, używany w aparatach, skanerach, telewizorach
+  \item CMYK, używany w druku wielobarwnym
+  \item HSV
+  \item YUV
+\end{itemize}
+Składowe dwóch ostatnich przestrzeni barw oddzielają informację o jasności
+od informacji o kolorach. Model barw YUV składa się z kanału luminacji Y
+oraz kanałów kodujących barwę U oraz V, są to kolejno składowa niebieska
+i składowa czerwona. W projekcie użyty jest format pikseli YUY2 (znany też
+pod nazwą YUYV), w którym na dwa piksele przypadają 32 bity.
+\todo{Wstaw obrazek ze schematem, bo to trudne do zrozumienia}
+Licząc od najstarszego bitu pierwsze osiem bitów przypada na Y0, to jest
+luminacja pierwszego piksela, następne osiem bitów na U0, kolejne osiem bitów
+to luminacja drugiego piksela, a pozostałe bity to składowa czerwona V0.
+Dla obydwóch pikseli składowe U i V są wspólne. Co istotne w projekcie,
+łatwo oddzielić luminację, która jest używana w przetwarzaniu obrazu.
 
 \subsection{Sieci neuronowe}
 Z czym się to je, jak działają, jak wygląda trenowanie
