@@ -1,0 +1,6 @@
+Celem projektu jest napisanie wtyczki do frameworka GStreamer
+wykorzystującej sieć neuronową do rozpoznawania cyfr w czasie rzeczywistym 
+na układzie Xilinx Zynq MPSoC. Wtyczka jest wykorzystana następnie
+w zdefiniowanym potoku uruchomionym przy pomocy narzędzia gst-launch-1.0.
+Zadaniami gotowych elementów potoku jest obsługa kamery, kadrowanie
+i skalowanie obrazu oraz wyświetlenie go na końcowym urządzeniu.
