@@ -1,10 +1,12 @@
 \documentclass[12pt, oneside]{article}
 
-\usepackage[left=2.5cm, top=2.5cm, bottom=2.5cm, right=2.5cm]{geometry}
+\usepackage[left=3.5cm, top=2.5cm, bottom=2.5cm, right=2.5cm]{geometry}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{polski}
 \usepackage[polish]{babel}
+
+\usepackage[]{todonotes}
 
 % temporarily for dark background
 \usepackage{xcolor}
@@ -90,9 +92,29 @@ z Zakładu Technologii Informatycznych
 \tableofcontents
 
 \newpage
+\section{Wstęp}
+Tutaj wstęp
+
+\newpage
 \section{Teoria}
 \subsection{Architektura FPGA}
-Tutaj jakieś rzeczy o architekturze FPGA --- pokrótce co to w ogóle jest.
+Field-programmable gate array (FPGA) to układy scalone, które mogą być
+elektronicznie przeprogramowane bez potrzeby demontażu samego układu
+z urządzenia. W porównaniu do układów ASIC znacznie taniej zaprojektować
+pierwszy działający układ. Elastyczna natura układów FPGA wiąże się z większym
+zużyciem powierzchni krzemu, opóźnień oraz zużycia energii.
+\todo{Dodać przypis} (FPGA architecture: survey and challenges)
+
+Podstawowa struktura układów FPGA składa się z różnych bloków logicznych,
+które mogą być łączone zależnie od projektu. Przykładami takich bloków są:
+DSP (jednostka przeprowadzająca obliczenia dodawania/mnożenia),
+LUT (look-up table, de facto tablica prawdy dowolnej funkcji boolowskiej),
+Flip Flop (przechowują wynik LUT), BRAM (block RAM, pamięć dwuportowa,
+jest w stanie przechowywać względnie dużą ilość danych).
+
+Układy FPGA przeważnie pracują na kilku-, kilkunastukrotnie niższych
+częstotliwościach niż CPU. \todo{Przypis}Wysoką wydajność zawdzięczają
+zrównolegleniu obliczeń.
 
 \subsection{Przetwarzanie obrazu}
 Formaty pikseli, jak są zbudowane, lorem ipsum.
@@ -101,10 +123,13 @@ Formaty pikseli, jak są zbudowane, lorem ipsum.
 Z czym się to je, jak działają, jak wygląda trenowanie
 
 \newpage
-\section{Opis projektu (?)}
+\section{Opis projektu}
 
 \subsection{Zarys projektu}
 Jakich narzędzi korzystałem, co chcę osiągnąć, elo 420.
+
+\subsection{Platforma}
+Zcu104 cośtam. Oparty o reVISION \texttrademark{}. Zdjęcia
 
 \subsection{Sieć neuronowa}
 Jak jest zbudowana, jak uczona, dlaczego taka a nie inna; problemy z LeNet-5
