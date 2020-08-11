@@ -169,7 +169,12 @@ wielokrotnie szybciej niż na CPU, pomimo niższej częstotliwości układu.
 \section{Opis projektu}
 
 \subsection{Zarys projektu}
-Jakich narzędzi korzystałem, co chcę osiągnąć.
+Celem projektu jest napisanie wtyczki do frameworka GStreamer
+wykorzystującej sieć neuronową do rozpoznawania cyfr w czasie rzeczywistym 
+na układzie Xilinx Zynq MPSoC. Wtyczka jest następnie wykorzystana
+w zdefiniowanym potoku uruchomionym przy pomocy narzędzia gst-launch-1.0.
+Zadaniami spoczywającymi na innych elementach potoku jest obsługa kamery,
+kadrowanie i skalowanie obrazu oraz wyświetlenie go na końcowym urządzeniu.
 
 \subsection{Platforma}
 Zcu104. Oparty o reVISION\texttrademark{}. Wstawić zdjęcia stanowiska
