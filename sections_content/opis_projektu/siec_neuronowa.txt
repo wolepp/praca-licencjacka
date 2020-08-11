@@ -1,0 +1,23 @@
+Architektura sieci została dobrana uwzględniając dostępne zasoby programowalnej
+logiki na płycie, a także możliwości sprzętu na którym dokonywana była jej
+synteza. Dla problemu klasyfikowania obrazów dobrze nadają się sieci
+splotowe (konwolucyjne, ang. convolutional neural networks - CNN), 
+\todo{przypis} których przykładem jest popularna sieć LeNet-5. Architektura ta
+zawiera zarówno w pełni połączone warstwy oraz warstwy splotowe i łączące.
+Niestety z powodu ograniczeń sprzętowych w pracy nie została użyta ta
+architektura.
+
+Model wykorzystany w projekcie posiada 2 warstwy ukryte, posiadające kolejno
+12 i 40 neuronów aktywowanych funkcją ReLU, i warstwy wyjściowej złożonej
+z 10 neuronów z funkcją aktywacji softmax. Do stworzenia sieci wykorzystano
+bibliotekę TensorFlow. Sieć uczona była na danych
+z \todo{przypis}bazy MNIST składającej się łącznie z 70000 przykładów
+cyfr na obrazach o wielkości 28x28 pikseli, z których każdy przedstawiony
+jest jako wartość od 0 (kolor czarny) do 255 (kolor biały). Próbki zostały
+podzielone na zbiór uczący, liczący 60000 próbek, oraz zbiór do testów
+z pozostałych 10000 cyfr.
+
+Oryginalnie cyfry są białe na czarnym tle co zwiększa
+\todo{przypis - badania własne} dokładność działania sieci (więcej 0 w danych),
+natomiast trzeba wziąć to pod uwagę przy późniejszym wykorzystaniu sieci,
+ponieważ docelowo sieć ma rozpoznawać czarne cyfry na białym tle.

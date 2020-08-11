@@ -1,0 +1,6 @@
+Sprzęt wykorzystany w projekcie to Xilinx Zynq UltraScale+ MPSoC ZCU104.
+Na jednym układzie znajduje się czterordzeniowy procesor ARM Cortex-A53,
+dwurdzeniowy procesor ARM Cortex-R5, układ graficzny Mali-400 oraz zasoby
+FPGA. Całość projektu została oparta o platformę Xilinx reVISION. Przetwarzane
+dane dostarczane są z kamery USB, która była dołączona w zestawie z płytą Zynq.
+Urządzeniem końcowym jest telewizor połączony przewodem HDMI z płytą.
