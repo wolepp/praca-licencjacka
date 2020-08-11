@@ -1,0 +1,5 @@
+Field-programmable gate array (FPGA) to układy scalone, które mogą być elektronicznie przeprogramowane bez potrzeby demontażu samego układu z urządzenia. W porównaniu do układów ASIC znacznie taniej zaprojektować pierwszy działający układ. Elastyczna natura układów FPGA wiąże się z większym zużyciem powierzchni krzemu, opóźnień oraz zużycia energii. (~FPGA architecture: survey and challenges)
+
+Podstawowa struktura układów FPGA składa się z różnych bloków logicznych, które mogą być łączone zależnie od projektu. Przykładami takich bloków są : DSP (jednostka przeprowadzająca obliczenia dodawania/mnożenia), LUT (look-up table, de facto tablica prawdy dowolnej funkcji boolowskiej), Flip Flop (przechowują wynik LUT), BRAM (block RAM; pamięć dwuportowa, może przechowywać względnie dużą ilość danych).
+
+Układy FPGA przeważnie pracują na kilku-, kilkunastukrotnie niższych częstotliwościach niż CPU. Wysoką wydajność zawdzięczają równolegleniu obliczeń.

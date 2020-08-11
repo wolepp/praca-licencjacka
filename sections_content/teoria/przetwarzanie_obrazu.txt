@@ -1,0 +1,15 @@
+# Przetwarzanie obrazu
+
+- jakiego typu są to dane
+- formaty pikseli, dokładniej o luminacja, chrominacja
+- wcale nie proste bo dużo danych, szczególnie na żywo - obliczenia
+- dwuwymiarowe dane
+
+Cyfrowe przetwarzanie obrazu jest problemem wymagającym dużych mocy obliczeniowych ze względu na ilość danych do przetworzenia. Nieskompresowany kolorowy obraz z pikselami w formacie RGB (po 8 bitów na kolor) o wysokości 720 pikseli i szerokości 1280 pikseli to 22118400 bitów (\approx 2,5MB). Obraz przetwarzany w czasie rzeczywistym, na przykład z kamery, zwielokrotnia tę liczbę o liczbę klatek na sekundę (przy trzydziestu klatkach na sekundę liczba danych rośnie do \approx 79 megabajtów na sekundę). Należy również pamiętać, że dane są dwuwymiarowe co jest ważne przy problemach związanych z rozpoznawaniem wzorców, klasyfikacją przedmiotów na obrazie, filtrowania w celu rozmazania lub wyostrzenia obrazów, itp.
+
+Jest wiele modeli przestrzeni barw, między innymi:
+- RGB, używany w aparatach, skanerach, telewizorach
+- CMYK, używany w druku wielobarwnym
+- HSV
+- YUV
+Składowe dwóch ostatnich przestrzeni barw oddzielają informację o jasności od informacji o kolorach. W projekcie użyty jest format pikseli YUY2 (znany też pod nazwą YUYV), w którym na dwa piksele przypadają 32 bity. \todo{Wstaw obrazek ze schematem, bo to trudne do zrozumienia}. Licząc od najstarszego bitu 8 bitów przypada na Y0, to jest luminacja pierwszego piksela, następnie 8 bitów na U0 --- koduje składową niebieską (U = B - Y), kolejne 8 bitów to luminacja drugiego piksela, a pozostałe 8 składowa czerwona V0 (V = R - Y). Dla obydwóch pikseli składowe U i V są wspólne. Co istotne w projekcie, łatwo oddzielić luminację, która jest używana w przetwarzaniu obrazu.
