@@ -142,7 +142,7 @@ od informacji o kolorach. Model barw YUV składa się z kanału luminacji Y
 oraz kanałów kodujących barwę U oraz V, są to kolejno składowa niebieska
 i składowa czerwona. W projekcie użyty jest format pikseli YUY2 (znany też
 pod nazwą YUYV), w którym na dwa piksele przypadają 32 bity.
-\todo{Wstaw obrazek ze schematem, bo to trudne do zrozumienia}
+\todo{Będzie obrazek ze schematem}
 Licząc od najstarszego bitu pierwsze osiem bitów przypada na Y0, to jest
 luminacja pierwszego piksela, następne osiem bitów na U0, kolejne osiem bitów
 to luminacja drugiego piksela, a pozostałe bity to składowa czerwona V0.
@@ -150,23 +150,37 @@ Dla obydwóch pikseli składowe U i V są wspólne. Co istotne w projekcie,
 łatwo oddzielić luminację, która jest używana w przetwarzaniu obrazu.
 
 \subsection{Sieci neuronowe}
-Z czym się to je, jak działają, jak wygląda trenowanie
+Sztuczna sieć neuronowa (SSN) jest modelem zdolnym do odwzorowania złożonych
+funkcji. Najprostsze sieci są zbudowane ze sztucznych neuronów, z których każdy
+posiada wiele wejść oraz jedno wyjście, które może być połączone z wejściami
+wielu innych neuronów. Każde z wejść neuronu jest związane ze znalezioną
+w procesie trenowania wagą. Wartość wyjścia to obliczony wynik funkcji aktywacji
+z sumy ważonych wejść. Sieć może mieć wiele warstw neuronów ukrytych, których
+wejściami są wyjścia neuronów z poprzedniej warstwy. 
+
+Sieci neuronowe są stosowane \todo{Przypis} w problemach
+związanych z predykcją, klasyfikacją, przetwarzaniem i analizowaniem
+danych. Do ich zastosowania nie jest potrzebna znajomość algorytmu rozwiązania
+danego problemu. Obliczenia w sieciach są wykonywane równolegle w każdej
+warstwie, dzięki czemu implementacja sieci na układzie FPGA może działać
+wielokrotnie szybciej niż na CPU, pomimo niższej częstotliwości układu.
 
 \newpage
 \section{Opis projektu}
 
 \subsection{Zarys projektu}
-Jakich narzędzi korzystałem, co chcę osiągnąć, elo 420.
+Jakich narzędzi korzystałem, co chcę osiągnąć.
 
 \subsection{Platforma}
-Zcu104 cośtam. Oparty o reVISION \texttrademark{}. Zdjęcia
+Zcu104. Oparty o reVISION\texttrademark{}. Wstawić zdjęcia stanowiska
 
 \subsection{Sieć neuronowa}
 Jak jest zbudowana, jak uczona, dlaczego taka a nie inna; problemy z LeNet-5
 
 \subsection{hls4ml}
-A co to za framework i dlaczego taki fajny, dostosowanie precyzji z profiling
-Tutaj też dopisz o dostosowaniu sieci, tzn.\ o progu
+Co to za framework i dlaczego taki fajny, dostosowanie precyzji z 
+hls4ml.profiling. Tutaj też o dostosowaniu sieci, tzn.~progowanie „białych” 
+pikseli itd.
 
 \subsection{Gstreamer}
 Do czego służy, jaki zbudowałem pipeline
@@ -195,15 +209,13 @@ Wyniki z samego pythona z danymi testowymi z mnista
 Tutaj wyniki z symulacji z danymi testowymi z mnista
 
 \subsection{Dane rzeczywiste}
-No i tutaj wyniki z kamerki. Myślę, że nie trzeba robić jakichś spisów wielkich,
-wystarczy opisać co dobrze odczytało, co źle, dlaczego, jakie sieć ma problemy,
-przygotowanie danych (zdjęcia!), jak poprawić skuteczność działania (LeNet xD)
+Wyniki z kamerki. Zdjęcia danych testowych, co wpływa na wynik, czy wszystko
+rozpoznaje itd,
 
 \newpage
 \section{Podsumowanie}
 W projekcie zostało zrobione to i to. Wyszło to tak i tak. Problem sprawiło
 tamto i owamto. Można to poprawić w ten sposób. Można część funkcjonalności
-z pipeline przenieść na fpga (sam pisałem, że przetwarzanie obrazu na fpga
-jest gicior).
+z pipeline przenieść na fpga (w końcu przetwarzanie obrazu na fpga jest szybkie)
 
 \end{document}
