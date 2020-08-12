@@ -8,14 +8,14 @@
 \usepackage[]{amsmath}
 \usepackage[]{listings}
 
-\usepackage[]{todonotes}
+\usepackage[color=gray!30, figcolor=white]{todonotes}
 
 % temporarily for dark background
 \usepackage{xcolor}
 \definecolor{mybackground}{rgb}{0.15, 0.15, 0.13}
 \definecolor{mytext}{rgb}{0.94, 0.94, 0.92}
-% \pagecolor{mybackground}
-% \color{mytext}
+\pagecolor{mybackground}
+\color{mytext}
 
 \begin{document}  
 \thispagestyle{empty}
@@ -144,7 +144,7 @@ od informacji o kolorach. Model barw YUV składa się z kanału luminacji Y
 oraz kanałów kodujących barwę U oraz V, są to kolejno składowa niebieska
 i składowa czerwona. W projekcie użyty jest format pikseli YUY2 (znany też
 pod nazwą YUYV), w którym na dwa piksele przypadają 32 bity.
-\todo{Będzie obrazek ze schematem}
+\missingfigure[]{Schemat formatu pikseli YUV}
 Licząc od najstarszego bitu pierwsze osiem bitów przypada na Y0, to jest
 luminacja pierwszego piksela, następne osiem bitów na U0, kolejne osiem bitów
 to luminacja drugiego piksela, a pozostałe bity to składowa czerwona V0.
@@ -172,11 +172,12 @@ wielokrotnie szybciej niż na CPU, pomimo niższej częstotliwości układu.
 \section{Opis projektu}
 
 \subsection{Zarys projektu}
+\todo{Schemat nr 1}
 Celem projektu jest napisanie wtyczki do frameworka GStreamer
 wykorzystującej sieć neuronową do rozpoznawania cyfr w czasie rzeczywistym 
-na układzie Xilinx Zynq MPSoC. Wtyczka jest następnie wykorzystana
-w zdefiniowanym potoku uruchomionym przy pomocy narzędzia gst-launch-1.0.
-Zadaniami spoczywającymi na innych elementach potoku jest obsługa kamery,
+na układzie Xilinx Zynq MPSoC oraz stworzenie odpowiedniego potoku danych
+korzystając z bibliotek GStreamer. Zadaniami spoczywającymi na innych
+elementach potoku jest obsługa kamery,
 kadrowanie i skalowanie obrazu oraz wyświetlenie go na końcowym urządzeniu.
 
 \subsection{Platforma}
@@ -230,10 +231,10 @@ samodzielną część na FPGA.
 
 \subsubsection{Precyzja danych}
 Typ danych używany w przekonwertowanym modelu to duże liczby całkowite
-(\lstinline{ap_int}) oraz liczby stałoprzecinkowe (\lstinline{ap_fixed}),
-których precyzję można ustalić do jednego bita.
+(\lstinline{ap_int}) oraz liczby stałoprzecinkowe (\lstinline{ap_fixed}).
+Precyzję obu można ustalić do jednego bita.
 Obliczenia przeprowadzane na liczbach o mniejszej
-precyzji są szybsze, natomiast zbyt niska precyzja może poskutkować
+precyzji są szybsze, natomiast zbyt niska może poskutkować
 bezużytecznością zsyntetyzowanej sieci. Aby odpowiednio dobrać precyzję
 danych skorzystano z narzędzi analizujących dostarczonych przez hls4ml.
 Narzędzie jest uruchamiane w Pythonie, gdzie należy dostarczyć plik z modelem
@@ -243,12 +244,84 @@ Wynikiem są wykresy przedstawiające \todo{Wstaw wykres z profiling}
 rozkład wartości wag każdej z warstw modelu. Szare pole w tle wykresu
 przedstawia zakres wartości, które obejmowane są przez precyzję określoną
 w pliku konfiguracyjnym. Dobrym punktem początkowym jest wybranie takiej
-precyzji dla każdej warstwy, która obejmuje wszystkie możliwe wagi.
-Dalsze ustalanie precyzji można wykonać w trakcie sprawdzania wyników
+liczby bitów dla każdej z warstw, która obejmuje wszystkie możliwe wagi.
+Dalsze ustalanie precyzji można wykonać w trakcie analizy wyników
 symulacji.
 
-\subsection{Gstreamer}
-Do czego służy, jaki zbudowałem pipeline
+\subsection{GStreamer}
+Zsyntetyzowana sieć jest częścią projektu. Potrzebne również dostarczenie
+danych do sieci oraz przedstawienie wyniku.
+Do tego celu skorzystano z biblioteki GStreamer, dzięki której można
+\todo{Graf --- schemat nr 2}
+tworzyć grafy z komponentów (pluginów, elementów)
+przetwarzających media, zarówno audio jak i video.
+Każdy z elementów grafu składa się z co najmniej jednego źródła (source),
+lub ujścia (sink), może mieć również wiele wejść i wyjść. W grafie pierwszy
+element nie może mieć wejść, natomiast konieczne jest aby posiadał co najmniej
+jedno wyjście. Poprawnie przygotowany graf nie powinien mieć komponentów
+oferujących źródło, które nie są z niczym połączone.
+Pluginy mają ujednolicony interfejs, dzięki czemu można w łatwy sposób
+włączyć do grafu własny elemetn. Wtyczki charakteryzują się
+pewnymi własnościami, znanymi jako „caps”. Określają one jakie parametry
+muszą spełniać media, aby zostały przetworzone przez daną wtyczkę.
+Łączone ze sobą elementy dokonują negocjacji
+parametrów mediów, takich jak rozdzielczość obrazu, format pikseli,
+ilość klatek na sekundę oraz innych.
+
+Wszystkie z elementów użytego grafu opiszę pokrótce:
+\todo[inline]{Alfabetycznie czy zgodnie z grafem?}
+
+\subsubsection{Caps filter}
+Element precyzujący parametry obrazu, które wymuszają
+dostosowanie się poprzedniego elementu --- na przykład videoscale.
+Zapisuje się je w postaci ciągu znaków objętych w cudzysłów.
+
+\subsubsection{fpsdisplaysink}
+Wtyczka typu sink (mająca tylko ujście), która jako parametr
+pobiera inną wtyczkę tego typu, np. xlnxvideosink. Jej użycie
+pozwala na sprawdzenie liczby klatek na sekundę wyświetlanego
+obrazu.
+
+\subsubsection{videoconvert}
+Element mający za zadanie dostosować wszystkie parametry obrazu tak,
+aby móc połączyć ze sobą dwa niekompatybilne pod względem „caps” elementy.
+Ta niekompatybilność może być spowodowana na przykład tym, że dwie
+wtyczki potrzebują innego formatu pikseli i jednocześnie nie oferują
+możliwości konwersji z jednego formatu na inny.
+
+\subsubsection{videocrop}
+Wtyczka służąca do wykadrowania obrazu w zdefiniowanym obszarze.
+Wykorzystana została aby otrzymać obraz o tej samej długości
+i szerokości wynoszącej 224 (co jest ośmiokrotnością 28, czyli
+długością boku obrazów, którymi wytrenowana została sieć) wycięty
+ze środka wideo o rozmiarze 1920\(\times \)1080.
+
+\subsubsection{videoscale}
+Skaluje obraz do wynegocjowanych pomiędzy sąsiadującymi elementami
+parametrów, przy czym pierwsza próba negocjacji to ta sama wielkość
+obrazu przy ujściu jak i w źródle, aby skalowanie nie było potrzebne.
+
+\subsubsection{videobox}
+Oprócz możliwości videocrop oferuje także możliwość osadzenia
+przychodzącego wideo w tym o większym rozmiarze dodając dookoła ramkę
+w wybranym kolorze. Własność autocrop oznacza automatyczne obliczenie
+wielkości ramek na podstawie parametrów określonych przez kolejny element tak,
+aby obraz przychodzący do videobox był wycentrowany a ramki
+były tej samej wielkości.
+
+\subsubsection{xlnxvideosrc i xlnxvideosink}
+Są to pluginy dostarczone przez firmę Xilinx wraz z platformą reVISION.
+Obydwa korzystają biblioteki Xilinx \lstinline{video_lib}
+Pierwszy z nich ułatwia odczytywanie danych ze źródeł, dla których potrzebne
+byłyby dodatkowe działania. Są to między innymi kamera USB (użyta w projekcie),
+HDMI, MIPI CSI (sprzętowy interfejs do transmisji obrazów i wideo).
+\todo{Przypis UG1221, s.32}
+Sam element zbudowany jest w oparciu o element v4l2src, dostępny
+w standardowej instalacji GStreamera.
+Xlnxvideosink również jest oparty o inny element --- kmssink.
+Zapewnia odpowiednią konfigurację połączenia z wyświetlaczami
+podłączonymi przez HDMI oraz DisplayPort.
+
 
 \subsection{Używanie sieci}
 Czyli synteza sieci i zrobienie z niej biblioteki statycznej „.a” 
