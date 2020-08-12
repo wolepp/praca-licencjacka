@@ -5,6 +5,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{polski}
 \usepackage[polish]{babel}
+\usepackage[]{amsmath}
+\usepackage[]{listings}
 
 \usepackage[]{todonotes}
 
@@ -150,6 +152,7 @@ Dla obydwóch pikseli składowe U i V są wspólne. Co istotne w projekcie,
 łatwo oddzielić luminację, która jest używana w przetwarzaniu obrazu.
 
 \subsection{Sieci neuronowe}
+\todo{Schemat sieci}
 Sztuczna sieć neuronowa (SSN) jest modelem zdolnym do odwzorowania złożonych
 funkcji. Najprostsze sieci są zbudowane ze sztucznych neuronów, z których każdy
 posiada wiele wejść oraz jedno wyjście, które może być połączone z wejściami
@@ -179,9 +182,11 @@ kadrowanie i skalowanie obrazu oraz wyświetlenie go na końcowym urządzeniu.
 \subsection{Platforma}
 \todo{Zdjęcia stanowiska}
 Sprzęt wykorzystany w projekcie to Xilinx Zynq UltraScale+ MPSoC ZCU104.
-Na jednym układzie znajduje się czterordzeniowy procesor ARM Cortex-A53,
-dwurdzeniowy procesor ARM Cortex-R5, układ graficzny Mali-400 oraz zasoby
-FPGA. Całość projektu została oparta o platformę Xilinx reVISION. Przetwarzane
+Na jednym układzie znajduje się czterordzeniowy procesor
+ARM \mbox{Cortex-A53},
+dwurdzeniowy procesor ARM \mbox{Cortex-R5},
+układ graficzny \mbox{Mali-400} oraz zasoby FPGA.
+Całość projektu została oparta o platformę Xilinx reVISION. Przetwarzane
 dane dostarczane są z kamery USB, która była dołączona w zestawie z płytą Zynq.
 Urządzeniem końcowym jest telewizor połączony przewodem HDMI z płytą.
 
@@ -189,9 +194,10 @@ Urządzeniem końcowym jest telewizor połączony przewodem HDMI z płytą.
 Architektura sieci została dobrana uwzględniając dostępne zasoby programowalnej
 logiki na płycie, a także możliwości sprzętu na którym dokonywana była jej
 synteza. Dla problemu klasyfikowania obrazów dobrze nadają się sieci
-splotowe (konwolucyjne, ang. convolutional neural networks - CNN), 
-\todo{przypis} których przykładem jest popularna sieć LeNet-5. Architektura ta
-zawiera zarówno w pełni połączone warstwy oraz warstwy splotowe i łączące.
+splotowe (konwolucyjne, ang.\ convolutional neural networks --- CNN), 
+\todo{przypis} których przykładem jest popularna sieć \mbox{LeNet-5}.
+Architektura ta zawiera zarówno w pełni połączone warstwy
+oraz warstwy splotowe i łączące.
 Niestety z powodu ograniczeń sprzętowych w pracy nie została użyta ta
 architektura.
 
@@ -200,8 +206,9 @@ Model wykorzystany w projekcie posiada 2 warstwy ukryte, posiadające kolejno
 z 10 neuronów z funkcją aktywacji softmax. Do stworzenia sieci wykorzystano
 bibliotekę TensorFlow. Sieć uczona była na danych
 z \todo{przypis}bazy MNIST składającej się łącznie z 70000 przykładów
-cyfr na obrazach o wielkości 28x28 pikseli, z których każdy przedstawiony
-jest jako wartość od 0 (kolor czarny) do 255 (kolor biały). Próbki zostały
+cyfr na obrazach o wielkości 28\(\times \)28 pikseli, z których każdy
+przedstawiony jest jako wartość od 0 (kolor czarny) do 255 (kolor biały).
+Próbki zostały
 podzielone na zbiór uczący, liczący 60000 próbek, oraz zbiór do testów
 z pozostałych 10000 cyfr.
 
@@ -211,15 +218,45 @@ natomiast trzeba wziąć to pod uwagę przy późniejszym wykorzystaniu sieci,
 ponieważ docelowo sieć ma rozpoznawać czarne cyfry na białym tle.
 
 \subsection{hls4ml}
-Co to za framework i dlaczego taki fajny, dostosowanie precyzji z 
-hls4ml.profiling. Tutaj też o dostosowaniu sieci, tzn.~progowanie „białych” 
-pikseli itd.
+\subsubsection{Idea hls4ml}
+Celem projektu hls4ml jest automatyczne przetłumaczenie wytrenowanego modelu,
+architektury i wag, do projektu syntezy wysokiego poziomu (HLS).
+\todo{Tutaj schemat hls4ml workflow}
+Czerwona część schematu pokazuje ogólną organizację pracy przy projektowaniu 
+odpowiedniego modelu uczenia maszynowego. Niebieska część należy do hls4ml,
+który tłumaczy dostarczony model z wagami do syntetyzowalnego kodu, który
+następnie można włączyć do większego projektu lub zaimplementować jako
+samodzielną część na FPGA.
+
+\subsubsection{Precyzja danych}
+Typ danych używany w przekonwertowanym modelu to duże liczby całkowite
+(\lstinline{ap_int}) oraz liczby stałoprzecinkowe (\lstinline{ap_fixed}),
+których precyzję można ustalić do jednego bita.
+Obliczenia przeprowadzane na liczbach o mniejszej
+precyzji są szybsze, natomiast zbyt niska precyzja może poskutkować
+bezużytecznością zsyntetyzowanej sieci. Aby odpowiednio dobrać precyzję
+danych skorzystano z narzędzi analizujących dostarczonych przez hls4ml.
+Narzędzie jest uruchamiane w Pythonie, gdzie należy dostarczyć plik z modelem
+Tensorflow, plik konfiguracyjny hsl4ml oraz dane.
+
+Wynikiem są wykresy przedstawiające \todo{Wstaw wykres z profiling}
+rozkład wartości wag każdej z warstw modelu. Szare pole w tle wykresu
+przedstawia zakres wartości, które obejmowane są przez precyzję określoną
+w pliku konfiguracyjnym. Dobrym punktem początkowym jest wybranie takiej
+precyzji dla każdej warstwy, która obejmuje wszystkie możliwe wagi.
+Dalsze ustalanie precyzji można wykonać w trakcie sprawdzania wyników
+symulacji.
 
 \subsection{Gstreamer}
 Do czego służy, jaki zbudowałem pipeline
 
 \subsection{Używanie sieci}
 Czyli synteza sieci i zrobienie z niej biblioteki statycznej „.a” 
+\subsubsection{Dostosowanie sieci}
+W celu poprawienia wyników działania sieci dokonano pewnych usprawnień.
+Rzeczywiste dane z kamery mogą być zaszumione, obiekty zacienione.
+A biały nie jest białym.
+
 
 \subsection{Część neuralnet}
 Czytanie obrazu, podział na część luma i chroma, wywołanie funkcji sieci,
