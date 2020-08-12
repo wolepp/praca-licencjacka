@@ -1,0 +1,30 @@
+Co to za framework i dlaczego taki fajny, dostosowanie precyzji z 
+hls4ml.profiling. Tutaj też o dostosowaniu sieci, tzn.~progowanie „białych” 
+pikseli itd.
+
+\subsubsection{Idea hls4ml}
+Celem projektu hls4ml jest automatyczne przetłumaczenie wytrenowanego modelu,
+architektury i wag, do projektu syntezy wysokiego poziomu (HLS).
+\todo{Tutaj schemat hls4ml workflow}
+Czerwona część schematu pokazuje ogólną organizację pracy przy projektowaniu 
+odpowiedniego modelu uczenia maszynowego. Niebieska część należy do hls4ml,
+który tłumaczy dostarczony model z wagami do syntetyzowalnego kodu, który
+następnie można włączyć do większego projektu lub zaimplementować jako
+samodzielną część na FPGA. 
+
+\subsubsection{Precyzja danych}
+Typ danych używany w przekonwertowanym modelu to duże liczby całkowite
+(ap_int) oraz liczby stałoprzecinkowe (ap_fixed), których precyzję można
+ustalić do jednego bita. Obliczenia przeprowadzane na liczbach o mniejszej
+precyzji są szybsze, natomiast zbyt niska precyzja może poskutkować
+bezużytecznością zsyntetyzowanej sieci. Aby odpowiednio dobrać precyzję
+danych skorzystano z narzędzi analizujących dostarczonych przez hls4ml.
+Narzędzie jest uruchamiane w Pythonie, gdzie należy dostarczyć plik z modelem
+Tensorflow, plik konfiguracyjny hsl4ml oraz dane. Wynikiem są wykresy
+przedstawiające \todo{Wstaw wykres z profiling}
+rozkład wartości wag każdej z warstw modelu. Szare pole w tle wykresu
+przedstawia zakres wartości, które obejmowane są przez precyzję określoną
+w pliku konfiguracyjnym. Dobrym punktem początkowym jest wybranie takiej
+precyzji dla każdej warstwy, która obejmuje wszystkie możliwe wagi.
+Dalsze ustalanie precyzji można wykonać w trakcie sprawdzania wyników
+symulacji.
