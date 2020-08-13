@@ -7,6 +7,7 @@
 \usepackage[polish]{babel}
 \usepackage[]{amsmath}
 \usepackage[]{listings}
+\usepackage[]{pgf}
 
 \usepackage[color=gray!30, figcolor=white]{todonotes}
 
@@ -14,10 +15,25 @@
 \usepackage{xcolor}
 \definecolor{mybackground}{rgb}{0.15, 0.15, 0.13}
 \definecolor{mytext}{rgb}{0.94, 0.94, 0.92}
-\pagecolor{mybackground}
-\color{mytext}
+% \pagecolor{mybackground}
+% \color{mytext}
 
-\begin{document}  
+\lstset{
+  basicstyle=\ttfamily
+}
+
+% listing settings
+\renewcommand{\ttdefault}{pcr}
+\lstdefinestyle{hls}{
+  language=C++,
+  keywordstyle=\ttfamily\bfseries,
+  numbers=left,
+  numberstyle=\small,
+  xleftmargin=2em,
+}
+
+
+\begin{document}
 \thispagestyle{empty}
 \begin{titlepage}
     \begin{center}
@@ -227,7 +243,9 @@ Czerwona część schematu pokazuje ogólną organizację pracy przy projektowan
 odpowiedniego modelu uczenia maszynowego. Niebieska część należy do hls4ml,
 który tłumaczy dostarczony model z wagami do syntetyzowalnego kodu, który
 następnie można włączyć do większego projektu lub zaimplementować jako
-samodzielną część na FPGA.
+samodzielną część na FPGA. Generowany projekt jest parametryzowany
+przez plik konfiguracyjny yml zawierający ścieżkę do pliku z zapisanym modelem
+wraz z wagami, typy danych kodujące wartości wag, nazwę docelowego układu FPGA.
 
 \subsubsection{Precyzja danych}
 Typ danych używany w przekonwertowanym modelu to duże liczby całkowite
@@ -236,17 +254,24 @@ Precyzję obu można ustalić do jednego bita.
 Obliczenia przeprowadzane na liczbach o mniejszej
 precyzji są szybsze, natomiast zbyt niska może poskutkować
 bezużytecznością zsyntetyzowanej sieci. Aby odpowiednio dobrać precyzję
-danych skorzystano z narzędzi analizujących dostarczonych przez hls4ml.
-Narzędzie jest uruchamiane w Pythonie, gdzie należy dostarczyć plik z modelem
-Tensorflow, plik konfiguracyjny hsl4ml oraz dane.
+wag skorzystano z pythonowej biblioteki hls4ml.profiling.
 
-Wynikiem są wykresy przedstawiające \todo{Wstaw wykres z profiling}
-rozkład wartości wag każdej z warstw modelu. Szare pole w tle wykresu
+Program korzystający z funkcji dostarczanych przez tę bibliotekę
+analizuje plik konfiguracyjny yml oraz model z pliku h5.
+Wynikiem działania programu jest wykres przedstawiający
+rozkład wartości wag każdej z warstw modelu otrzymanych w procesie trenowania.
+Szare pole w tle wykresu
 przedstawia zakres wartości, które obejmowane są przez precyzję określoną
 w pliku konfiguracyjnym. Dobrym punktem początkowym jest wybranie takiej
 liczby bitów dla każdej z warstw, która obejmuje wszystkie możliwe wagi.
 Dalsze ustalanie precyzji można wykonać w trakcie analizy wyników
 symulacji.
+\begin{figure}[h]
+  \caption{Rozkład wartości wag modelu}\label{fig:weights_dist}
+  \input{figures/dist_of_weights.pgf}
+  \centering
+\end{figure}
+
 
 \subsection{GStreamer}
 Zsyntetyzowana sieć jest częścią projektu. Potrzebne również dostarczenie
@@ -269,7 +294,7 @@ parametrów mediów, takich jak rozdzielczość obrazu, format pikseli,
 ilość klatek na sekundę oraz innych.
 
 Wszystkie z elementów użytego grafu opiszę pokrótce:
-\todo[inline]{Alfabetycznie czy zgodnie z grafem?}
+\todo[inline]{Alfabetycznie czy zgodnie z kolejnością elementów w pipeline?}
 
 \subsubsection{Caps filter}
 Element precyzujący parametry obrazu, które wymuszają
@@ -278,7 +303,7 @@ Zapisuje się je w postaci ciągu znaków objętych w cudzysłów.
 
 \subsubsection{fpsdisplaysink}
 Wtyczka typu sink (mająca tylko ujście), która jako parametr
-pobiera inną wtyczkę tego typu, np. xlnxvideosink. Jej użycie
+pobiera inną wtyczkę tego typu, np.~xlnxvideosink. Jej użycie
 pozwala na sprawdzenie liczby klatek na sekundę wyświetlanego
 obrazu.
 
@@ -324,11 +349,52 @@ podłączonymi przez HDMI oraz DisplayPort.
 
 
 \subsection{Używanie sieci}
-Czyli synteza sieci i zrobienie z niej biblioteki statycznej „.a” 
+\subsubsection{Generowanie projektu}
+Architekturę sieci wraz z wagami zapisano do pliku h5. Stworzono
+plik konfiguracyjny hls4ml. Następnie na jego podstawie wygenerowano projekt
+z przekonwertowaną siecią. Wśród wygenerowanych plików znajduje się
+również kod służący do symulacji działania projektu. Przygotowane zostały
+pliki z danymi testującymi sieć --- 10000 przetworzonych przykładów z bazy
+MNIST tak, aby cyfry były koloru czarnego, tło białego. Zakres wartości
+od 0 do 255.
+
+\subsubsection{Funkcja}
+Cała sieć jest jedną funkcją. Jej parametrami są dwie tablice:
+\lstinline[style=hls]{input[]}, w której są dane do przetworzenia,
+oraz \lstinline[style=hls]{output[]}, do której funkcja zapisuje
+obliczone predykcje.
+
+\begin{minipage}{\linewidth}
+\lstinputlisting[
+  caption={Nagłówek funkcji},
+  label={lst:nn_header},
+  firstline=23,
+  lastline=28,
+  language=C++
+]{listings/nn.h}
+\end{minipage}
+
 \subsubsection{Dostosowanie sieci}
 W celu poprawienia wyników działania sieci dokonano pewnych usprawnień.
-Rzeczywiste dane z kamery mogą być zaszumione, obiekty zacienione.
-A biały nie jest białym.
+Sieć została wytrenowana oryginalnymi danymi, w których dane przedstawiające
+cyfry mają wartości równe 255 lub bliskie, a białe tło jest przedstawione
+jako wartość 0.
+Ponadto rzeczywiste dane z kamery mogą być zaszumione,
+przedstawione obiekty zacienione, a same cyfry mogą nie być idealnie czarne.
+
+\begin{minipage}{\linewidth}
+\lstinputlisting[
+  caption={kod},
+  label={lst:data_tresh},
+  firstline=36,
+  lastline=39,
+  language=C++
+  % floatplacement=H
+]{listings/nn.cpp}
+gdzie \lstinline{N_INPUT_1_1} to liczba pikseli,
+input to parametr funkcji 
+\end{minipage}
+
 
 
 \subsection{Część neuralnet}

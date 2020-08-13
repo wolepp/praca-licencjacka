@@ -1,0 +1,8 @@
+
+
+
+
+Usprawnienia 
+W celu poprawienia wyników działania sieci dokonano pewnych usprawnień.
+Rzeczywiste dane z kamery mogą być zaszumione, obiekty zacienione.
+A biały nie jest białym.
