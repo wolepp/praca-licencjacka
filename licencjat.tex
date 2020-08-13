@@ -1,4 +1,4 @@
-\documentclass[12pt, oneside]{article}
+\documentclass[12pt, oneside, a4paper]{article}
 
 \usepackage[left=3.5cm, top=2.5cm, bottom=2.5cm, right=2.5cm]{geometry}
 
@@ -9,6 +9,8 @@
 \usepackage[]{listings}
 \usepackage[]{pgf}
 \usepackage[]{float}
+\usepackage[]{graphics}
+\usepackage[]{svg}
 
 \usepackage[
   color=orange!30,
@@ -166,7 +168,11 @@ od informacji o kolorach. Model barw YUV składa się z kanału luminacji Y
 oraz kanałów kodujących barwę U oraz V, są to kolejno składowa niebieska
 i składowa czerwona. W projekcie użyty jest format pikseli YUY2 (znany też
 pod nazwą YUYV), w którym na dwa piksele przypadają 32 bity.
-\missingfigure{Schemat formatu pikseli YUV}
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=1.2]{figures/yuv2-scheme.png} 
+  \caption{Schemat formatu pikseli YUV2}\label{fig:yuv2}
+\end{figure}
 Licząc od najstarszego bitu pierwsze osiem bitów przypada na Y0, to jest
 luminacja pierwszego piksela, następne osiem bitów na U0, kolejne osiem bitów
 to luminacja drugiego piksela, a pozostałe bity to składowa czerwona V0.
@@ -174,7 +180,6 @@ Dla obydwóch pikseli składowe U i V są wspólne. Co istotne w projekcie,
 łatwo oddzielić luminację, która jest używana w przetwarzaniu obrazu.
 
 \subsection{Sieci neuronowe}
-\missingfigure{Schemat sieci}
 Sztuczna sieć neuronowa (SSN) jest modelem zdolnym do odwzorowania złożonych
 funkcji. Najprostsze sieci są zbudowane ze sztucznych neuronów, z których każdy
 posiada wiele wejść oraz jedno wyjście, które może być połączone z wejściami
@@ -183,7 +188,7 @@ w procesie trenowania wagą. Wartość wyjścia to obliczony wynik funkcji aktyw
 z sumy ważonych wejść. Sieć może mieć wiele warstw neuronów ukrytych, których
 wejściami są wyjścia neuronów z poprzedniej warstwy. 
 
-Sieci neuronowe są stosowane \todo{Przypis} w problemach
+Sieci neuronowe są stosowane w problemach
 związanych z predykcją, klasyfikacją, przetwarzaniem i analizowaniem
 danych. Do ich zastosowania nie jest potrzebna znajomość algorytmu rozwiązania
 danego problemu. Obliczenia w sieciach są wykonywane równolegle w każdej
@@ -224,7 +229,12 @@ oraz warstwy splotowe i łączące.
 Niestety z powodu ograniczeń sprzętowych w pracy nie została użyta ta
 architektura.
 
-\missingfigure[]{Schemat sieci}
+\begin{figure}[h]
+  \centering
+  \includesvg[scale=0.5625]{figures/nn-scheme.svg}
+  \caption{Schemat użytej architektury.
+  }\label{fig:nn-scheme}
+\end{figure}
 Model wykorzystany w projekcie posiada 2 warstwy ukryte, posiadające kolejno
 12 i 40 neuronów aktywowanych funkcją ReLU, i warstwy wyjściowej złożonej
 z 10 neuronów z funkcją aktywacji softmax. Do stworzenia sieci wykorzystano
@@ -243,9 +253,14 @@ ponieważ docelowo sieć ma rozpoznawać czarne cyfry na białym tle.
 
 \subsection{hls4ml}
 \subsubsection{Idea hls4ml}
+\todo[inline]{Czy mogę użyć tego schematu? Lub pod jakimi warunkami mogę?}
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.2]{figures/hls4ml.jpg}
+  \caption{Schemat pracy z hls4ml}\label{fig:hls4ml}
+\end{figure}
 Celem projektu hls4ml jest automatyczne przetłumaczenie wytrenowanego modelu,
 architektury i wag, do projektu syntezy wysokiego poziomu (HLS).
-\missingfigure{Schemat z workflow hls4ml}
 Czerwona część schematu pokazuje ogólną organizację pracy przy projektowaniu 
 odpowiedniego modelu uczenia maszynowego. Niebieska część należy do hls4ml,
 który tłumaczy dostarczony model z wagami do syntetyzowalnego kodu, który
@@ -281,7 +296,12 @@ symulacji.
 
 
 \subsection{GStreamer}
-\missingfigure{Schemat pipelinea}
+\begin{figure}[h]
+  \centering
+  % \includesvg[]{figures/pipeline.svg}
+  \includegraphics[scale=0.5625]{figures/pipeline.png}
+  \caption{Schemat grafu. Na zielono plugin z siecią neuronową}\label{fig:pipeline}
+\end{figure}
 Zsyntetyzowana sieć jest częścią projektu. Potrzebne również dostarczenie
 danych do sieci oraz przedstawienie wyniku.
 Do tego celu skorzystano z biblioteki GStreamer, dzięki której można
@@ -293,16 +313,17 @@ element nie może mieć wejść, natomiast konieczne jest aby posiadał co najmn
 jedno wyjście. Poprawnie przygotowany graf nie powinien mieć komponentów
 oferujących źródło, które nie są z niczym połączone.
 Pluginy mają ujednolicony interfejs, dzięki czemu można w łatwy sposób
-włączyć do grafu własny elemetn. Wtyczki charakteryzują się
-pewnymi własnościami, znanymi jako „caps”. Określają one jakie parametry
-muszą spełniać media, aby zostały przetworzone przez daną wtyczkę.
+włączyć do grafu własny element. Wtyczki charakteryzują się
+pewnymi własnościami, znanymi jako „caps”. Określają one jakie 
+media jest w stanie przetworzyć dana wtyczka (na przykład format pikseli,
+maksymalny rozmiar obrazu). 
 Łączone ze sobą elementy dokonują negocjacji
 parametrów mediów, takich jak rozdzielczość obrazu, format pikseli,
 ilość klatek na sekundę oraz innych.
 
 \todo[inline]{Alfabetycznie czy zgodnie z kolejnością elementów w pipeline?}
 
-\subsubsection{Caps filter}
+\subsubsection{Filter caps}
 Element precyzujący parametry obrazu, które wymuszają
 dostosowanie się poprzedniego elementu --- na przykład videoscale.
 Zapisuje się je w postaci ciągu znaków objętych w cudzysłów.
@@ -419,8 +440,8 @@ cyfry oraz pozbycia się szumów obrazu i jasnych cieni.
 \end{minipage}
 
 \subsubsection{Tworzenie biblioteki}
-\todo[inline]{No tu zrobić samemu schemat, nieładnie kopiować}
 \begin{figure}[h]
+\todo[inline]{Rysunek tymczasowy, zostanie zastąpiony własnym w lepszej jakości}
   \centering
   \includegraphics[scale=0.7]{figures/c-call.png}
   \caption{Schemat tworzenia biblioteki}\label{fig:ccall}
