@@ -33,7 +33,7 @@ void nn(c_input_t input[N_INPUT_1_1], c_output_t output[N_LAYER_6])
 	// przerobienie na input_t
 	input_t input1[N_INPUT_1_1];
     #pragma HLS ARRAY_RESHAPE variable=input1 complete dim=0
-	for(int i=0; i<N_INPUT_1_1; i++) {
+	for(int i=0; i<784; i++) {
 	#pragma HLS pipeline II=1
 		input1[i] = (input[i] < 140) ? 255 : 0;
 	}

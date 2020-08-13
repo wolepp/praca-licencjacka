@@ -8,8 +8,13 @@
 \usepackage[]{amsmath}
 \usepackage[]{listings}
 \usepackage[]{pgf}
+\usepackage[]{float}
 
-\usepackage[color=gray!30, figcolor=white]{todonotes}
+\usepackage[
+  color=orange!30,
+  figcolor=white,
+  figwidth=10cm
+]{todonotes}
 
 % temporarily for dark background
 \usepackage{xcolor}
@@ -116,7 +121,7 @@ Tutaj wstęp
 \newpage
 \section{Teoria}
 \subsection{Architektura FPGA}
-Field-programmable gate array (FPGA) to układy scalone, które mogą być
+Field-Programmable Gate Array (FPGA) to układy scalone, które mogą być
 elektronicznie przeprogramowane bez potrzeby demontażu samego układu
 z urządzenia. W porównaniu do układów ASIC znacznie taniej zaprojektować
 pierwszy działający układ. Elastyczna natura układów FPGA wiąże się z większym
@@ -124,15 +129,16 @@ zużyciem powierzchni krzemu, opóźnień oraz zużycia energii.
 \todo{Dodać przypis} (FPGA architecture: survey and challenges)
 
 Podstawowa struktura układów FPGA składa się z różnych bloków logicznych,
-które mogą być łączone zależnie od projektu. Przykładami takich bloków są:
+które mogą być łączone ze sobą w zależności od wymagań projektowych.
+Przykładami takich bloków są:
 DSP (jednostka przeprowadzająca obliczenia dodawania/mnożenia),
-LUT (look-up table, de facto tablica prawdy dowolnej funkcji boolowskiej),
-Flip Flop (przechowują wynik LUT), BRAM (block RAM, pamięć dwuportowa,
+LUT (Look-Up Table, de facto tablica prawdy dowolnej funkcji boolowskiej),
+Flip Flop (przechowują wynik LUT), BRAM (Block RAM, pamięć dwuportowa,
 jest w stanie przechowywać względnie dużą ilość danych).
 
 Układy FPGA przeważnie pracują na kilku-, kilkunastukrotnie niższych
-częstotliwościach niż CPU. \todo{Przypis} Wysoką wydajność zawdzięczają
-zrównolegleniu obliczeń.
+częstotliwościach niż CPU. \todo{Przypis} Osiągają wysoką wydajność
+dzięki masywnemu zrównolegleniu obliczeń.
 
 \subsection{Przetwarzanie obrazu}
 Cyfrowe przetwarzanie obrazu jest problemem wymagającym dużych mocy
@@ -160,7 +166,7 @@ od informacji o kolorach. Model barw YUV składa się z kanału luminacji Y
 oraz kanałów kodujących barwę U oraz V, są to kolejno składowa niebieska
 i składowa czerwona. W projekcie użyty jest format pikseli YUY2 (znany też
 pod nazwą YUYV), w którym na dwa piksele przypadają 32 bity.
-\missingfigure[]{Schemat formatu pikseli YUV}
+\missingfigure{Schemat formatu pikseli YUV}
 Licząc od najstarszego bitu pierwsze osiem bitów przypada na Y0, to jest
 luminacja pierwszego piksela, następne osiem bitów na U0, kolejne osiem bitów
 to luminacja drugiego piksela, a pozostałe bity to składowa czerwona V0.
@@ -168,7 +174,7 @@ Dla obydwóch pikseli składowe U i V są wspólne. Co istotne w projekcie,
 łatwo oddzielić luminację, która jest używana w przetwarzaniu obrazu.
 
 \subsection{Sieci neuronowe}
-\todo{Schemat sieci}
+\missingfigure{Schemat sieci}
 Sztuczna sieć neuronowa (SSN) jest modelem zdolnym do odwzorowania złożonych
 funkcji. Najprostsze sieci są zbudowane ze sztucznych neuronów, z których każdy
 posiada wiele wejść oraz jedno wyjście, które może być połączone z wejściami
@@ -188,16 +194,16 @@ wielokrotnie szybciej niż na CPU, pomimo niższej częstotliwości układu.
 \section{Opis projektu}
 
 \subsection{Zarys projektu}
-\todo{Schemat nr 1}
-Celem projektu jest napisanie wtyczki do frameworka GStreamer
-wykorzystującej sieć neuronową do rozpoznawania cyfr w czasie rzeczywistym 
-na układzie Xilinx Zynq MPSoC oraz stworzenie odpowiedniego potoku danych
+Celem projektu jest implementacja systemu do rozpoznawania cyfr
+w czasie rzeczywistym. Cel zrealizowano poprzez implementację
+wtyczki GStreamera, wykorzystującej sieć neuronową, na układzie
+Xilinx Zynq MPSoC oraz stworzenie odpowiedniego potoku danych
 korzystając z bibliotek GStreamer. Zadaniami spoczywającymi na innych
 elementach potoku jest obsługa kamery,
 kadrowanie i skalowanie obrazu oraz wyświetlenie go na końcowym urządzeniu.
 
 \subsection{Platforma}
-\todo{Zdjęcia stanowiska}
+\missingfigure{Zdjęcie stanowiska}
 Sprzęt wykorzystany w projekcie to Xilinx Zynq UltraScale+ MPSoC ZCU104.
 Na jednym układzie znajduje się czterordzeniowy procesor
 ARM \mbox{Cortex-A53},
@@ -218,6 +224,7 @@ oraz warstwy splotowe i łączące.
 Niestety z powodu ograniczeń sprzętowych w pracy nie została użyta ta
 architektura.
 
+\missingfigure[]{Schemat sieci}
 Model wykorzystany w projekcie posiada 2 warstwy ukryte, posiadające kolejno
 12 i 40 neuronów aktywowanych funkcją ReLU, i warstwy wyjściowej złożonej
 z 10 neuronów z funkcją aktywacji softmax. Do stworzenia sieci wykorzystano
@@ -238,7 +245,7 @@ ponieważ docelowo sieć ma rozpoznawać czarne cyfry na białym tle.
 \subsubsection{Idea hls4ml}
 Celem projektu hls4ml jest automatyczne przetłumaczenie wytrenowanego modelu,
 architektury i wag, do projektu syntezy wysokiego poziomu (HLS).
-\todo{Tutaj schemat hls4ml workflow}
+\missingfigure{Schemat z workflow hls4ml}
 Czerwona część schematu pokazuje ogólną organizację pracy przy projektowaniu 
 odpowiedniego modelu uczenia maszynowego. Niebieska część należy do hls4ml,
 który tłumaczy dostarczony model z wagami do syntetyzowalnego kodu, który
@@ -266,7 +273,7 @@ w pliku konfiguracyjnym. Dobrym punktem początkowym jest wybranie takiej
 liczby bitów dla każdej z warstw, która obejmuje wszystkie możliwe wagi.
 Dalsze ustalanie precyzji można wykonać w trakcie analizy wyników
 symulacji.
-\begin{figure}[h]
+\begin{figure}[H]
   \caption{Rozkład wartości wag modelu}\label{fig:weights_dist}
   \input{figures/dist_of_weights.pgf}
   \centering
@@ -274,10 +281,10 @@ symulacji.
 
 
 \subsection{GStreamer}
+\missingfigure{Schemat pipelinea}
 Zsyntetyzowana sieć jest częścią projektu. Potrzebne również dostarczenie
 danych do sieci oraz przedstawienie wyniku.
 Do tego celu skorzystano z biblioteki GStreamer, dzięki której można
-\todo{Graf --- schemat nr 2}
 tworzyć grafy z komponentów (pluginów, elementów)
 przetwarzających media, zarówno audio jak i video.
 Każdy z elementów grafu składa się z co najmniej jednego źródła (source),
@@ -293,7 +300,6 @@ muszą spełniać media, aby zostały przetworzone przez daną wtyczkę.
 parametrów mediów, takich jak rozdzielczość obrazu, format pikseli,
 ilość klatek na sekundę oraz innych.
 
-Wszystkie z elementów użytego grafu opiszę pokrótce:
 \todo[inline]{Alfabetycznie czy zgodnie z kolejnością elementów w pipeline?}
 
 \subsubsection{Caps filter}
@@ -306,6 +312,14 @@ Wtyczka typu sink (mająca tylko ujście), która jako parametr
 pobiera inną wtyczkę tego typu, np.~xlnxvideosink. Jej użycie
 pozwala na sprawdzenie liczby klatek na sekundę wyświetlanego
 obrazu.
+
+\subsubsection{videobox}
+Oferuje możliwość osadzenia obrazu w tym o innym rozmiarze
+rozmiarze wypełniając pozostałą przestrzeń ramką
+w wybranym kolorze. Własność autocrop oznacza automatyczne obliczenie
+wielkości ramek na podstawie parametrów określonych przez kolejny element tak,
+aby obraz przychodzący do videobox był wycentrowany a ramki
+były tej samej wielkości.
 
 \subsubsection{videoconvert}
 Element mający za zadanie dostosować wszystkie parametry obrazu tak,
@@ -325,14 +339,6 @@ ze środka wideo o rozmiarze 1920\(\times \)1080.
 Skaluje obraz do wynegocjowanych pomiędzy sąsiadującymi elementami
 parametrów, przy czym pierwsza próba negocjacji to ta sama wielkość
 obrazu przy ujściu jak i w źródle, aby skalowanie nie było potrzebne.
-
-\subsubsection{videobox}
-Oprócz możliwości videocrop oferuje także możliwość osadzenia
-przychodzącego wideo w tym o większym rozmiarze dodając dookoła ramkę
-w wybranym kolorze. Własność autocrop oznacza automatyczne obliczenie
-wielkości ramek na podstawie parametrów określonych przez kolejny element tak,
-aby obraz przychodzący do videobox był wycentrowany a ramki
-były tej samej wielkości.
 
 \subsubsection{xlnxvideosrc i xlnxvideosink}
 Są to pluginy dostarczone przez firmę Xilinx wraz z platformą reVISION.
@@ -356,11 +362,13 @@ z przekonwertowaną siecią. Wśród wygenerowanych plików znajduje się
 również kod służący do symulacji działania projektu. Przygotowane zostały
 pliki z danymi testującymi sieć --- 10000 przetworzonych przykładów z bazy
 MNIST tak, aby cyfry były koloru czarnego, tło białego. Zakres wartości
-od 0 do 255.
+wynosi od 0 do 255.
 
 \subsubsection{Funkcja}
-Cała sieć jest jedną funkcją. Jej parametrami są dwie tablice:
-\lstinline[style=hls]{input[]}, w której są dane do przetworzenia,
+Cała sieć jest przedstawiona jako jedna funkcja.
+Parametrami tej funkcji są dwie tablice:
+\lstinline[style=hls]{input[]}, do której są zapisywane są
+dane do przetworzenia,
 oraz \lstinline[style=hls]{output[]}, do której funkcja zapisuje
 obliczone predykcje.
 
@@ -368,34 +376,74 @@ obliczone predykcje.
 \lstinputlisting[
   caption={Nagłówek funkcji},
   label={lst:nn_header},
-  firstline=23,
-  lastline=28,
-  language=C++
+  style=hls
 ]{listings/nn.h}
 \end{minipage}
 
+\subsubsection{Interfejs}
+Aby móc korzystać z sieci w aplikacji uruchamianej na procesorze ARM
+zadeklarowano użycie interfejsu IO \mbox{AXI-4} Lite.
+
 \subsubsection{Dostosowanie sieci}
 W celu poprawienia wyników działania sieci dokonano pewnych usprawnień.
-Sieć została wytrenowana oryginalnymi danymi, w których dane przedstawiające
-cyfry mają wartości równe 255 lub bliskie, a białe tło jest przedstawione
-jako wartość 0.
+Sieć została wytrenowana oryginalnymi danymi, w których piksele tworzące
+cyfry mają wartości równe 255 lub tej wartości bliskie,
+a piksele białego są przedtawione jako 0.
 Ponadto rzeczywiste dane z kamery mogą być zaszumione,
 przedstawione obiekty zacienione, a same cyfry mogą nie być idealnie czarne.
 
+Przy każdym wywołaniu funkcji sieci dokonywana jest transformacja
+danych poprzez kod pokazany na listingu~\ref{lst:data_tresh}.
+Wartość każdego z piksela jest zamieniana na wartość 255 lub 0, zależnie
+od początkowej jego wartości --- dla wartości mniejszych od 140
+(kolor szary lub ciemniejszy) przypisany jest kolor biały, wartość 255.
+Dla pikseli jasnych (od 140 w górę) przypisywana wartość to 0, kolor czarny.
+
+W ten sposób dokonuje się zarówno odpowiedniego przetworzenia danych
+uwzględniającego sposób wytrenowania modelu, jak również uwydatnienia
+cyfry oraz pozbycia się szumów obrazu i jasnych cieni.
+
 \begin{minipage}{\linewidth}
 \lstinputlisting[
-  caption={kod},
+  caption={Transformacja danych.},
   label={lst:data_tresh},
   firstline=36,
   lastline=39,
   language=C++
   % floatplacement=H
 ]{listings/nn.cpp}
-gdzie \lstinline{N_INPUT_1_1} to liczba pikseli,
-input to parametr funkcji 
+\begin{itemize}
+  \item \lstinline[style=hls]{input[]} --- tablica z danymi (parametr funkcji)
+  \item \lstinline[style=hls]{input1[]} --- dane przetwarzane przez sieć
+\end{itemize}
 \end{minipage}
 
+\subsubsection{Tworzenie biblioteki}
+\todo[inline]{No tu zrobić samemu schemat, nieładnie kopiować}
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.7]{figures/c-call.png}
+  \caption{Schemat tworzenia biblioteki}\label{fig:ccall}
+\end{figure}
+Zsyntetyzowany moduł sieci został wyeksportowany w środowisku Vivado HLS
+do paczki IP (Intelectual Property). Następnie poprzez narzędzie
+\lstinline{sdx_pack} utworzono statyczną bibliotekę gotową do wykorzystania
+w innym projekcie w środowisku SDSoC (Software-Defined System on Chip,
+IDE do pisania aplikacji lub bibliotek uruchamianych na platformach
+Xilinx MPSoC).
 
+\begin{minipage}{\linewidth}
+\lstinputlisting[
+  caption={Narzędzie sdx\_pack},
+  label={lst:sdx_pack},
+]{listings/sdx_pack.sh}
+\end{minipage}
+
+Wywołując narzędzie \lstinline{sdx_pack} należy podać plik nagłówkowy funkcji,
+docelową nazwę biblioteki, mapowanie parametrów funkcji na porty modułu,
+ścieżkę do pliku \lstinline{component.xml} wygenerowanego podczas eksportu
+do paczki IP, protokół kontroli modułu, odpowiedni zegar, a informacje
+dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
 
 \subsection{Część neuralnet}
 Czytanie obrazu, podział na część luma i chroma, wywołanie funkcji sieci,
