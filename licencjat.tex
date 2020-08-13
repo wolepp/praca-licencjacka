@@ -26,7 +26,9 @@
 % \color{mytext}
 
 \lstset{
-  basicstyle=\ttfamily
+  basicstyle=\ttfamily,
+  captionpos=b,
+  aboveskip=2em,
 }
 
 % listing settings
@@ -139,7 +141,7 @@ Flip Flop (przechowują wynik LUT), BRAM (Block RAM, pamięć dwuportowa,
 jest w stanie przechowywać względnie dużą ilość danych).
 
 Układy FPGA przeważnie pracują na kilku-, kilkunastukrotnie niższych
-częstotliwościach niż CPU. \todo{Przypis} Osiągają wysoką wydajność
+częstotliwościach niż CPU. Osiągają wysoką wydajność
 dzięki masywnemu zrównolegleniu obliczeń.
 
 \subsection{Przetwarzanie obrazu}
@@ -253,7 +255,8 @@ ponieważ docelowo sieć ma rozpoznawać czarne cyfry na białym tle.
 
 \subsection{hls4ml}
 \subsubsection{Idea hls4ml}
-\todo[inline]{Czy mogę użyć tego schematu? Lub pod jakimi warunkami mogę?}
+\todo[inline]{Czy mogę użyć tego schematu? Lub pod jakimi warunkami mogę?
+Obrazek jest z dokumentacji hls4ml}
 \begin{figure}[h]
   \centering
   \includegraphics[scale=0.2]{figures/hls4ml.jpg}
@@ -273,6 +276,7 @@ wraz z wagami, typy danych kodujące wartości wag, nazwę docelowego układu FP
 Typ danych używany w przekonwertowanym modelu to duże liczby całkowite
 (\lstinline{ap_int}) oraz liczby stałoprzecinkowe (\lstinline{ap_fixed}).
 Precyzję obu można ustalić do jednego bita.
+\todo{Poprawić wystający tekst}
 Obliczenia przeprowadzane na liczbach o mniejszej
 precyzji są szybsze, natomiast zbyt niska może poskutkować
 bezużytecznością zsyntetyzowanej sieci. Aby odpowiednio dobrać precyzję
@@ -321,7 +325,8 @@ maksymalny rozmiar obrazu).
 parametrów mediów, takich jak rozdzielczość obrazu, format pikseli,
 ilość klatek na sekundę oraz innych.
 
-\todo[inline]{Alfabetycznie czy zgodnie z kolejnością elementów w pipeline?}
+\todo[inline]{Elementy wypisać z opisem
+  alfabetycznie czy zgodnie z kolejnością elementów w pipeline?}
 
 \subsubsection{Filter caps}
 Element precyzujący parametry obrazu, które wymuszają
@@ -424,6 +429,7 @@ W ten sposób dokonuje się zarówno odpowiedniego przetworzenia danych
 uwzględniającego sposób wytrenowania modelu, jak również uwydatnienia
 cyfry oraz pozbycia się szumów obrazu i jasnych cieni.
 
+\hspace{-1cm}
 \begin{minipage}{\linewidth}
 \lstinputlisting[
   caption={Transformacja danych.},
@@ -434,6 +440,7 @@ cyfry oraz pozbycia się szumów obrazu i jasnych cieni.
   % floatplacement=H
 ]{listings/nn.cpp}
 \begin{itemize}
+  \setlength{\itemindent}{3em}
   \item \lstinline[style=hls]{input[]} --- tablica z danymi (parametr funkcji)
   \item \lstinline[style=hls]{input1[]} --- dane przetwarzane przez sieć
 \end{itemize}
