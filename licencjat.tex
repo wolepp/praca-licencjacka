@@ -20,9 +20,9 @@
 % \color{mytext}
 
 \usepackage[
-  color=gray!130,
-  textcolor=mytext,
-  figcolor=mybackground,
+  color=orange!30,
+  textcolor=black,
+  figcolor=white,
   figwidth=10cm
 ]{todonotes}
 
@@ -251,7 +251,7 @@ architektura.
 \begin{figure}[h]
   \centering
   % \includegraphics{figures/network-scheme.png}
-  \includesvg[scale=0.62]{figures/nn-scheme.svg}
+  \includesvg[scale=0.625]{figures/nn-scheme.svg}
   \caption{Schemat użytej architektury.
   }\label{fig:nn-scheme}
 \end{figure}
@@ -405,8 +405,8 @@ Jej użycie pozwala na sprawdzenie liczby klatek na sekundę
 wyświetlanego obrazu.
 
 
-\todo[inline]{Schemat fizyczny:  wtyczka hdmi, dane leza do arma, tam kolejne wtyczki, potem delegowane sa do
-sieci w logice i tak dalej }
+\todo[inline]{Todo: schemat fizyczny: hdmi -> arm (wtyczki) ->
+dane do sieci -> ...}
 
 \subsection{Używanie sieci}
 \subsubsection{Generowanie projektu}
@@ -476,9 +476,8 @@ cyfry oraz pozbycia się szumów obrazu i jasnych cieni.
 
 \subsubsection{Tworzenie biblioteki}
 \begin{figure}[h]
-\todo[inline]{Rysunek tymczasowy, zostanie zastąpiony własnym w lepszej jakości}
   \centering
-  \includegraphics[scale=0.7]{figures/c-call.png}
+  \includesvg[scale=0.5]{figures/sdx_pack-scheme}
   \caption{Schemat tworzenia biblioteki}\label{fig:ccall}
 \end{figure}
 Zsyntetyzowany moduł sieci został wyeksportowany w środowisku Vivado HLS
