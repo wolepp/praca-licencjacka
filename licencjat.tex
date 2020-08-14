@@ -12,18 +12,20 @@
 \usepackage[]{graphics}
 \usepackage[]{svg}
 
-\usepackage[
-  color=orange!30,
-  figcolor=white,
-  figwidth=10cm
-]{todonotes}
-
 % temporarily for dark background
 \usepackage{xcolor}
 \definecolor{mybackground}{rgb}{0.15, 0.15, 0.13}
 \definecolor{mytext}{rgb}{0.94, 0.94, 0.92}
 % \pagecolor{mybackground}
 % \color{mytext}
+
+\usepackage[
+  color=gray!130,
+  textcolor=mytext,
+  figcolor=mybackground,
+  figwidth=10cm
+]{todonotes}
+
 
 \lstset{
   basicstyle=\ttfamily,
@@ -40,6 +42,8 @@
   numberstyle=\small,
   xleftmargin=2em,
 }
+
+\def\CPP{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
 
 
 \begin{document}
@@ -144,6 +148,19 @@ Układy FPGA przeważnie pracują na kilku-, kilkunastukrotnie niższych
 częstotliwościach niż CPU. Osiągają wysoką wydajność
 dzięki masywnemu zrównolegleniu obliczeń.
 
+Programowanie FPGA polega na pisaniu logiki
+w językach HDL (Hardware Description Language) takimi jak VHDL 
+czy też Verilog. Napisana logika definiuje zachowanie układu FPGA.
+Gotowy opis logiki syntetyzuje się, czyli generuje połączenia pomiędzy
+zasobami układu. Kolejnym etapem jest implementacja --- odzworowanie
+połączeń w konkretnym układzie.
+ 
+HLS (High-Level Synthesis) to proces ułatwiający pisanie skomplikowanej
+logiki. Algorytmy można pisać w językach wysokiego poziomu, takich jak
+C, \CPP, SystemC. Przygotowany kod jest transpilowany poprzez odpowiedni
+kompilator HLS do języka RTL (Register-Transfer Level; język opisu sprzętu
+na poziomie bramek i rejestrów), a ten może być zaimplementowany na układzie.
+
 \subsection{Przetwarzanie obrazu}
 Cyfrowe przetwarzanie obrazu jest problemem wymagającym dużych mocy
 obliczeniowych ze względu na ilość danych do przetworzenia. Nieskompresowany
@@ -233,7 +250,8 @@ architektura.
 
 \begin{figure}[h]
   \centering
-  \includesvg[scale=0.5625]{figures/nn-scheme.svg}
+  % \includegraphics{figures/network-scheme.png}
+  \includesvg[scale=0.62]{figures/nn-scheme.svg}
   \caption{Schemat użytej architektury.
   }\label{fig:nn-scheme}
 \end{figure}
@@ -246,39 +264,39 @@ cyfr na obrazach o wielkości 28\(\times \)28 pikseli, z których każdy
 przedstawiony jest jako wartość od 0 (kolor czarny) do 255 (kolor biały).
 Próbki zostały
 podzielone na zbiór uczący, liczący 60000 próbek, oraz zbiór do testów
-z pozostałych 10000 cyfr.
-
-Oryginalnie cyfry są białe na czarnym tle co zwiększa
-\todo{przypis - badania własne} dokładność działania sieci (więcej 0 w danych),
-natomiast trzeba wziąć to pod uwagę przy późniejszym wykorzystaniu sieci,
-ponieważ docelowo sieć ma rozpoznawać czarne cyfry na białym tle.
+z pozostałych 10000 cyfr. Cyfry składają się z białych pikseli, tło jest czarne.
+Dokonano prób trenowania sieci przetworzonymi danymi, w których kolory były
+odwrócone, natomiast wytrenowane modele w trakcie testów nie przekraczały
+progu czterdziestu procent dobrze zaklasyfikowanych obrazów.
 
 \subsection{hls4ml}
 \subsubsection{Idea hls4ml}
-\todo[inline]{Czy mogę użyć tego schematu? Lub pod jakimi warunkami mogę?
-Obrazek jest z dokumentacji hls4ml}
 \begin{figure}[h]
   \centering
+  \todo[inline]{Wstawić źródło w przypisie}
   \includegraphics[scale=0.2]{figures/hls4ml.jpg}
   \caption{Schemat pracy z hls4ml}\label{fig:hls4ml}
 \end{figure}
-Celem projektu hls4ml jest automatyczne przetłumaczenie wytrenowanego modelu,
-architektury i wag, do projektu syntezy wysokiego poziomu (HLS).
+Celem projektu hls4ml jest wygenerowanie kodu \CPP{} na podstawie zapisanego
+modelu z TensorFlow.
 Czerwona część schematu pokazuje ogólną organizację pracy przy projektowaniu 
 odpowiedniego modelu uczenia maszynowego. Niebieska część należy do hls4ml,
 który tłumaczy dostarczony model z wagami do syntetyzowalnego kodu, który
 następnie można włączyć do większego projektu lub zaimplementować jako
 samodzielną część na FPGA. Generowany projekt jest parametryzowany
 przez plik konfiguracyjny yml zawierający ścieżkę do pliku z zapisanym modelem
-wraz z wagami, typy danych kodujące wartości wag, nazwę docelowego układu FPGA.
+wraz z wagami, typy danych kodujące wartości wag, nazwę docelowego układu FPGA
+raz parametry optymalizacji dotyczące zużycia zasobów --- większa ilość
+zasobów oznacza zrównoleglenie większej części obliczeń.
 
 \subsubsection{Precyzja danych}
-Typ danych używany w przekonwertowanym modelu to duże liczby całkowite
-(\lstinline{ap_int}) oraz liczby stałoprzecinkowe (\lstinline{ap_fixed}).
-Precyzję obu można ustalić do jednego bita.
-\todo{Poprawić wystający tekst}
+Typ danych używany w przekonwertowanym modelu to duże liczby
+stałoprzecinkowe (\lstinline{ap_fixed}) oraz liczby całkowite
+(\lstinline{ap_int}).
+Precyzję obu typów można ustalić do jednego bita.
 Obliczenia przeprowadzane na liczbach o mniejszej
-precyzji są szybsze, natomiast zbyt niska może poskutkować
+precyzji są umożliwiają większe zrównoleglenie obliczeń,
+natomiast zbyt niska precyzja może poskutkować
 bezużytecznością zsyntetyzowanej sieci. Aby odpowiednio dobrać precyzję
 wag skorzystano z pythonowej biblioteki hls4ml.profiling.
 
@@ -293,8 +311,8 @@ liczby bitów dla każdej z warstw, która obejmuje wszystkie możliwe wagi.
 Dalsze ustalanie precyzji można wykonać w trakcie analizy wyników
 symulacji.
 \begin{figure}[H]
-  \caption{Rozkład wartości wag modelu}\label{fig:weights_dist}
   \input{figures/dist_of_weights.pgf}
+  \caption{Rozkład wartości wag modelu}\label{fig:weights_dist}
   \centering
 \end{figure}
 
@@ -302,11 +320,15 @@ symulacji.
 \subsection{GStreamer}
 \begin{figure}[h]
   \centering
-  % \includesvg[]{figures/pipeline.svg}
+  \includegraphics[scale=0.24]{figures/image_flow.png}
+  \caption{Schemat logiczny przetwarzania obrazu}\label{fig:image_flow}
+\end{figure}
+\begin{figure}[h]
+  \centering
   \includegraphics[scale=0.5625]{figures/pipeline.png}
   \caption{Schemat grafu. Na zielono plugin z siecią neuronową}\label{fig:pipeline}
 \end{figure}
-Zsyntetyzowana sieć jest częścią projektu. Potrzebne również dostarczenie
+Zsyntetyzowana sieć jest częścią projektu. Potrzebne jest również dostarczenie
 danych do sieci oraz przedstawienie wyniku.
 Do tego celu skorzystano z biblioteki GStreamer, dzięki której można
 tworzyć grafy z komponentów (pluginów, elementów)
@@ -325,27 +347,18 @@ maksymalny rozmiar obrazu).
 parametrów mediów, takich jak rozdzielczość obrazu, format pikseli,
 ilość klatek na sekundę oraz innych.
 
-\todo[inline]{Elementy wypisać z opisem
-  alfabetycznie czy zgodnie z kolejnością elementów w pipeline?}
-
-\subsubsection{Filter caps}
-Element precyzujący parametry obrazu, które wymuszają
-dostosowanie się poprzedniego elementu --- na przykład videoscale.
-Zapisuje się je w postaci ciągu znaków objętych w cudzysłów.
-
-\subsubsection{fpsdisplaysink}
-Wtyczka typu sink (mająca tylko ujście), która jako parametr
-pobiera inną wtyczkę tego typu, np.~xlnxvideosink. Jej użycie
-pozwala na sprawdzenie liczby klatek na sekundę wyświetlanego
-obrazu.
-
-\subsubsection{videobox}
-Oferuje możliwość osadzenia obrazu w tym o innym rozmiarze
-rozmiarze wypełniając pozostałą przestrzeń ramką
-w wybranym kolorze. Własność autocrop oznacza automatyczne obliczenie
-wielkości ramek na podstawie parametrów określonych przez kolejny element tak,
-aby obraz przychodzący do videobox był wycentrowany a ramki
-były tej samej wielkości.
+\subsubsection{xlnxvideosrc i xlnxvideosink}
+Są to pluginy dostarczone przez firmę Xilinx wraz z platformą reVISION.
+Obydwa korzystają biblioteki Xilinx \lstinline{video_lib}
+Pierwszy z nich ułatwia odczytywanie danych ze źródeł, dla których potrzebne
+byłyby dodatkowe działania. Są to między innymi kamera USB (użyta w projekcie),
+HDMI, MIPI CSI (sprzętowy interfejs do transmisji obrazów i wideo).
+\todo{Przypis UG1221, s.32}
+Sam element zbudowany jest w oparciu o element v4l2src, dostępny
+w standardowej instalacji GStreamera.
+Xlnxvideosink również jest oparty o inny element --- kmssink.
+Zapewnia odpowiednią konfigurację połączenia z wyświetlaczami
+podłączonymi przez HDMI oraz DisplayPort.
 
 \subsubsection{videoconvert}
 Element mający za zadanie dostosować wszystkie parametry obrazu tak,
@@ -366,19 +379,34 @@ Skaluje obraz do wynegocjowanych pomiędzy sąsiadującymi elementami
 parametrów, przy czym pierwsza próba negocjacji to ta sama wielkość
 obrazu przy ujściu jak i w źródle, aby skalowanie nie było potrzebne.
 
-\subsubsection{xlnxvideosrc i xlnxvideosink}
-Są to pluginy dostarczone przez firmę Xilinx wraz z platformą reVISION.
-Obydwa korzystają biblioteki Xilinx \lstinline{video_lib}
-Pierwszy z nich ułatwia odczytywanie danych ze źródeł, dla których potrzebne
-byłyby dodatkowe działania. Są to między innymi kamera USB (użyta w projekcie),
-HDMI, MIPI CSI (sprzętowy interfejs do transmisji obrazów i wideo).
-\todo{Przypis UG1221, s.32}
-Sam element zbudowany jest w oparciu o element v4l2src, dostępny
-w standardowej instalacji GStreamera.
-Xlnxvideosink również jest oparty o inny element --- kmssink.
-Zapewnia odpowiednią konfigurację połączenia z wyświetlaczami
-podłączonymi przez HDMI oraz DisplayPort.
+\subsubsection{sdxnet}
+Sdxnet to wtyczka wykorzystująca sieć neuronową do rozpoznania cyfr
+znajdujących się na obrazie przez nią przechodzącym. Element ten został
+zaimplementowany na potrzeby tego projektu.
 
+\subsubsection{Filter caps}
+Element precyzujący parametry obrazu, które wymuszają
+dostosowanie się poprzedniego elementu --- na przykład videoscale.
+Zapisuje się go w postaci ciągu znaków ujętych w cudzysłów.
+
+\subsubsection{videobox}
+Oferuje możliwość osadzenia obrazu w tym o innym rozmiarze
+rozmiarze wypełniając pozostałą przestrzeń ramką
+w wybranym kolorze. Własność autocrop oznacza automatyczne obliczenie
+wielkości ramek na podstawie parametrów określonych przez kolejny element tak,
+aby obraz przychodzący do videobox był wycentrowany a ramki
+były tej samej wielkości.
+
+\subsubsection{fpsdisplaysink}
+Wtyczka typu sink (mająca tylko ujście), która jako parametr
+pobiera inną wtyczkę tego typu, np.~xlnxvideosink,
+zastępując w grafie tamtą.
+Jej użycie pozwala na sprawdzenie liczby klatek na sekundę
+wyświetlanego obrazu.
+
+
+\todo[inline]{Schemat fizyczny:  wtyczka hdmi, dane leza do arma, tam kolejne wtyczki, potem delegowane sa do
+sieci w logice i tak dalej }
 
 \subsection{Używanie sieci}
 \subsubsection{Generowanie projektu}
@@ -420,7 +448,7 @@ przedstawione obiekty zacienione, a same cyfry mogą nie być idealnie czarne.
 
 Przy każdym wywołaniu funkcji sieci dokonywana jest transformacja
 danych poprzez kod pokazany na listingu~\ref{lst:data_tresh}.
-Wartość każdego z piksela jest zamieniana na wartość 255 lub 0, zależnie
+Wartość każdego piksela jest zamieniana na wartość 255 lub 0, zależnie
 od początkowej jego wartości --- dla wartości mniejszych od 140
 (kolor szary lub ciemniejszy) przypisany jest kolor biały, wartość 255.
 Dla pikseli jasnych (od 140 w górę) przypisywana wartość to 0, kolor czarny.
