@@ -7,7 +7,7 @@ sdx_pack -header nn.hpp -lib libnn.a \
          -primary-clk ap_clk=13.333 \
          -target-family zynquplus \
          -target-cpu cortex-a53 \
-         -target-os linux \
+         -target-os linux
 
 
 

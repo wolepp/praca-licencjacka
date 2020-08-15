@@ -1,6 +1,6 @@
 \documentclass[12pt, oneside, a4paper]{article}
 
-\usepackage[left=3.5cm, top=2.5cm, bottom=2.5cm, right=2.5cm]{geometry}
+\usepackage[left=2.5cm, top=2.5cm, bottom=2.5cm, right=2.5cm]{geometry}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{polski}
@@ -11,6 +11,17 @@
 \usepackage[]{float}
 \usepackage[]{graphics}
 \usepackage[]{svg}
+\usepackage{booktabs}
+\usepackage[justification=centering,tablename=Tabela]{caption}
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+    colorlinks=false,
+    urlcolor=magenta,
+}
+
+\urlstyle{same}
+
 
 % temporarily for dark background
 \usepackage{xcolor}
@@ -44,7 +55,7 @@
 }
 
 \def\CPP{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
-
+\def\ok{\(\sim \)}
 
 \begin{document}
 \thispagestyle{empty}
@@ -52,7 +63,7 @@
     \begin{center}
 
       \Large
-	    \textbf{Uniwersytet Jagielloński w Krakowie}\vspace{0.2cm}\\ Wydział Fizyki, Astronomii i Informatyki Stosowanej
+	    \textbf{Uniwersytet Jagielloński w~Krakowie}\vspace{0.2cm}\\ Wydział Fizyki, Astronomii i~Informatyki Stosowanej
       \vspace*{1cm}
                
       \vspace{3cm}
@@ -92,9 +103,9 @@ z Zakładu Technologii Informatycznych
 \large \textbf{Oświadczenie autora pracy}\vspace{0.6cm}\\
 \end{flushleft}
 
-\noindent Świadom odpowiedzialności prawnej oświadczam, że niniejsza praca dyplomowa została napisana przeze mnie samodzielnie i nie zawiera treści uzyskanych w sposób niezgodny z obowiązującymi przepisami.\\
+\noindent Świadom odpowiedzialności prawnej oświadczam, że niniejsza praca dyplomowa została napisana przeze mnie samodzielnie i~nie zawiera treści uzyskanych w~sposób niezgodny z~obowiązującymi przepisami.\\
 
-\noindent Oświadczam również, że przedstawiona praca nie była wcześniej przedmiotem procedur związanych z uzyskaniem tytułu zawodowego w wyższej uczelni.
+\noindent Oświadczam również, że przedstawiona praca nie była wcześniej przedmiotem procedur związanych z~uzyskaniem tytułu zawodowego w~wyższej uczelni.
 \vspace{2cm}
 \begin{center}
 \begin{tabular}{lr}
@@ -108,7 +119,7 @@ z Zakładu Technologii Informatycznych
 \large \textbf{Oświadczenie kierującego pracą}
 \end{flushleft}
 
-\noindent Potwierdzam, że niniejsza praca została przygotowana pod moim kierunkiem i~kwalifikuje się do przedstawienia jej w postępowaniu o nadanie tytułu zawodowego.
+\noindent Potwierdzam, że niniejsza praca została przygotowana pod moim kierunkiem i~kwalifikuje się do przedstawienia jej w~postępowaniu o~nadanie tytułu zawodowego.
 \vspace{2cm}
 \begin{center}
 \begin{tabular}{lr}
@@ -131,18 +142,18 @@ Tutaj wstęp
 \subsection{Architektura FPGA}
 Field-Programmable Gate Array (FPGA) to układy scalone, które mogą być
 elektronicznie przeprogramowane bez potrzeby demontażu samego układu
-z urządzenia. W porównaniu do układów ASIC znacznie taniej zaprojektować
-pierwszy działający układ. Elastyczna natura układów FPGA wiąże się z większym
+z urządzenia. w~porównaniu do układów ASIC znacznie taniej zaprojektować
+pierwszy działający układ. Elastyczna natura układów FPGA wiąże się z~większym
 zużyciem powierzchni krzemu, opóźnień oraz zużycia energii.
 \todo{Dodać przypis} (FPGA architecture: survey and challenges)
 
-Podstawowa struktura układów FPGA składa się z różnych bloków logicznych,
-które mogą być łączone ze sobą w zależności od wymagań projektowych.
+Podstawowa struktura układów FPGA składa się z~różnych bloków logicznych,
+które mogą być łączone ze sobą w~zależności od wymagań projektowych.
 Przykładami takich bloków są:
 DSP (jednostka przeprowadzająca obliczenia dodawania/mnożenia),
 LUT (Look-Up Table, de facto tablica prawdy dowolnej funkcji boolowskiej),
 Flip Flop (przechowują wynik LUT), BRAM (Block RAM, pamięć dwuportowa,
-jest w stanie przechowywać względnie dużą ilość danych).
+jest w~stanie przechowywać względnie dużą ilość danych).
 
 Układy FPGA przeważnie pracują na kilku-, kilkunastukrotnie niższych
 częstotliwościach niż CPU. Osiągają wysoką wydajność
@@ -153,64 +164,65 @@ w językach HDL (Hardware Description Language) takimi jak VHDL
 czy też Verilog. Napisana logika definiuje zachowanie układu FPGA.
 Gotowy opis logiki syntetyzuje się, czyli generuje połączenia pomiędzy
 zasobami układu. Kolejnym etapem jest implementacja --- odzworowanie
-połączeń w konkretnym układzie.
+połączeń w~konkretnym układzie.
  
 HLS (High-Level Synthesis) to proces ułatwiający pisanie skomplikowanej
-logiki. Algorytmy można pisać w językach wysokiego poziomu, takich jak
+logiki. Algorytmy można pisać w~językach wysokiego poziomu, takich jak
 C, \CPP, SystemC. Przygotowany kod jest transpilowany poprzez odpowiedni
 kompilator HLS do języka RTL (Register-Transfer Level; język opisu sprzętu
-na poziomie bramek i rejestrów), a ten może być zaimplementowany na układzie.
+na poziomie bramek i~rejestrów), a~ten może być zaimplementowany na układzie.
 
 \subsection{Przetwarzanie obrazu}
 Cyfrowe przetwarzanie obrazu jest problemem wymagającym dużych mocy
 obliczeniowych ze względu na ilość danych do przetworzenia. Nieskompresowany
-kolorowy obraz z pikselami w formacie RGB (po 8 bitów na kolor) o wysokości
-720 pikseli i szerokości 1280 pikseli to 22118400 bitów (\(\approx \) 2,5MB). Obraz
-przetwarzany w czasie rzeczywistym, na przykład z kamery, zwielokrotnia tę
-liczbę o liczbę klatek na sekundę (przy trzydziestu klatkach na sekundę liczba
+kolorowy obraz z~pikselami w~formacie RGB (po 8 bitów na kolor) o~wysokości
+720 pikseli i~szerokości 1280 pikseli to 22118400 bitów (\(\approx \) 2,5MB). Obraz
+przetwarzany w~czasie rzeczywistym, na przykład z~kamery, zwielokrotnia tę
+liczbę o~liczbę klatek na sekundę (przy trzydziestu klatkach na sekundę liczba
 danych rośnie do około 79 megabajtów na sekundę). Należy również pamiętać, że
-dane są dwuwymiarowe co jest ważne przy problemach związanych z rozpoznawaniem
-wzorców, klasyfikacją przedmiotów na obrazie, filtrowania w celu rozmazania lub
+dane są dwuwymiarowe co jest ważne przy problemach związanych z~rozpoznawaniem
+wzorców, klasyfikacją przedmiotów na obrazie, filtrowania w~celu rozmazania lub
 wyostrzenia obrazów, itp.
 
 \subsubsection{Formaty pikseli}
 Jest wiele modeli przestrzeni barw (a co za tym idzie, sposobów kodowania
 pikseli) między innymi:
 \begin{itemize}
-  \item RGB, używany w aparatach, skanerach, telewizorach
-  \item CMYK, używany w druku wielobarwnym
+  \item RGB, używany w~aparatach, skanerach, telewizorach
+  \item CMYK, używany w~druku wielobarwnym
   \item HSV
   \item YUV
 \end{itemize}
-Składowe dwóch ostatnich przestrzeni barw oddzielają informację o jasności
-od informacji o kolorach. Model barw YUV składa się z kanału luminacji Y
+Składowe dwóch ostatnich przestrzeni barw oddzielają informację o~jasności
+od informacji o~kolorach. Model barw YUV składa się z~kanału luminacji~Y
 oraz kanałów kodujących barwę U oraz V, są to kolejno składowa niebieska
-i składowa czerwona. W projekcie użyty jest format pikseli YUY2 (znany też
-pod nazwą YUYV), w którym na dwa piksele przypadają 32 bity.
+i składowa czerwona. w~projekcie użyty jest format pikseli YUY2 (znany też
+pod nazwą YUYV), w~którym na dwa piksele przypadają 32 bity.
+Licząc od najstarszego bitu pierwsze osiem bitów przypada na Y0 (patrz
+rys.~\ref{fig:yuv2}), to jest
+luminacja pierwszego piksela, następne osiem bitów na U0, kolejne osiem bitów
+to luminacja drugiego piksela, a~pozostałe bity to składowa czerwona V0.
+Dla obydwóch pikseli składowe U~i~V są wspólne. Co istotne w~projekcie,
+łatwo oddzielić luminację, która jest używana w~przetwarzaniu obrazu.
 \begin{figure}[h]
   \centering
-  \includegraphics[scale=1.2]{figures/yuv2-scheme.png} 
+  \includegraphics[scale=1.4]{figures/yuv2-scheme.png} 
   \caption{Schemat formatu pikseli YUV2}\label{fig:yuv2}
 \end{figure}
-Licząc od najstarszego bitu pierwsze osiem bitów przypada na Y0, to jest
-luminacja pierwszego piksela, następne osiem bitów na U0, kolejne osiem bitów
-to luminacja drugiego piksela, a pozostałe bity to składowa czerwona V0.
-Dla obydwóch pikseli składowe U i V są wspólne. Co istotne w projekcie,
-łatwo oddzielić luminację, która jest używana w przetwarzaniu obrazu.
 
 \subsection{Sieci neuronowe}
 Sztuczna sieć neuronowa (SSN) jest modelem zdolnym do odwzorowania złożonych
-funkcji. Najprostsze sieci są zbudowane ze sztucznych neuronów, z których każdy
-posiada wiele wejść oraz jedno wyjście, które może być połączone z wejściami
-wielu innych neuronów. Każde z wejść neuronu jest związane ze znalezioną
+funkcji. Najprostsze sieci są zbudowane ze sztucznych neuronów, z~których każdy
+posiada wiele wejść oraz jedno wyjście, które może być połączone z~wejściami
+wielu innych neuronów. Każde z~wejść neuronu jest związane ze znalezioną
 w procesie trenowania wagą. Wartość wyjścia to obliczony wynik funkcji aktywacji
 z sumy ważonych wejść. Sieć może mieć wiele warstw neuronów ukrytych, których
-wejściami są wyjścia neuronów z poprzedniej warstwy. 
+wejściami są wyjścia neuronów z~poprzedniej warstwy. 
 
-Sieci neuronowe są stosowane w problemach
-związanych z predykcją, klasyfikacją, przetwarzaniem i analizowaniem
+Sieci neuronowe są stosowane w~problemach
+związanych z~predykcją, klasyfikacją, przetwarzaniem i~analizowaniem
 danych. Do ich zastosowania nie jest potrzebna znajomość algorytmu rozwiązania
-danego problemu. Obliczenia w sieciach są wykonywane równolegle w każdej
+danego problemu. Obliczenia w~sieciach są wykonywane równolegle w~każdej
 warstwie, dzięki czemu implementacja sieci na układzie FPGA może działać
 wielokrotnie szybciej niż na CPU, pomimo niższej częstotliwości układu.
 
@@ -222,93 +234,102 @@ Celem projektu jest implementacja systemu do rozpoznawania cyfr
 w czasie rzeczywistym. Cel zrealizowano poprzez implementację
 wtyczki GStreamera, wykorzystującej sieć neuronową, na układzie
 Xilinx Zynq MPSoC oraz stworzenie odpowiedniego potoku danych
-korzystając z bibliotek GStreamer. Zadaniami spoczywającymi na innych
+korzystając z~bibliotek GStreamer. Zadaniami spoczywającymi na innych
 elementach potoku jest obsługa kamery,
-kadrowanie i skalowanie obrazu oraz wyświetlenie go na końcowym urządzeniu.
+kadrowanie i~skalowanie obrazu oraz wyświetlenie go na końcowym urządzeniu.
 
 \subsection{Platforma}
-\missingfigure{Zdjęcie stanowiska}
-Sprzęt wykorzystany w projekcie to Xilinx Zynq UltraScale+ MPSoC ZCU104.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/place_of_work_small.jpg}
+  \caption{Stanowisko testowe}\label{fig:stanowisko}
+\end{figure}
+Sprzęt wykorzystany w~projekcie to Xilinx Zynq UltraScale+ MPSoC ZCU104.
 Na jednym układzie znajduje się czterordzeniowy procesor
 ARM \mbox{Cortex-A53},
 dwurdzeniowy procesor ARM \mbox{Cortex-R5},
 układ graficzny \mbox{Mali-400} oraz zasoby FPGA.
-Całość projektu została oparta o platformę Xilinx reVISION. Przetwarzane
-dane dostarczane są z kamery USB, która była dołączona w zestawie z płytą Zynq.
-Urządzeniem końcowym jest telewizor połączony przewodem HDMI z płytą.
+Całość projektu została oparta o~platformę Xilinx reVISION. Przetwarzane
+dane dostarczane są z~kamery USB, która była dołączona w~zestawie z~płytą Zynq.
+Urządzeniem końcowym jest telewizor połączony przewodem HDMI z~płytą.
 
 \subsection{Sieć neuronowa}
 Architektura sieci została dobrana uwzględniając dostępne zasoby programowalnej
-logiki na płycie, a także możliwości sprzętu na którym dokonywana była jej
+logiki na płycie, a~także możliwości sprzętu na którym dokonywana była jej
 synteza. Dla problemu klasyfikowania obrazów dobrze nadają się sieci
 splotowe (konwolucyjne, ang.\ convolutional neural networks --- CNN), 
 \todo{przypis} których przykładem jest popularna sieć \mbox{LeNet-5}.
-Architektura ta zawiera zarówno w pełni połączone warstwy
-oraz warstwy splotowe i łączące.
-Niestety z powodu ograniczeń sprzętowych w pracy nie została użyta ta
+Architektura ta zawiera zarówno w~pełni połączone warstwy
+oraz warstwy splotowe i~łączące.
+Niestety z~powodu ograniczeń sprzętowych w~pracy nie została użyta ta
 architektura.
 
+Model wykorzystany w~projekcie posiada 2 warstwy ukryte, posiadające kolejno
+12 i~40 neuronów aktywowanych funkcją ReLU, i~warstwy wyjściowej złożonej
+z 10 neuronów z~funkcją aktywacji softmax.
 \begin{figure}[h]
+\hspace{2cm}
   \centering
   % \includegraphics{figures/network-scheme.png}
-  \includesvg[scale=0.625]{figures/nn-scheme.svg}
+  \includesvg[scale=0.6]{figures/nn-scheme.svg}
   \caption{Schemat użytej architektury.
   }\label{fig:nn-scheme}
 \end{figure}
-Model wykorzystany w projekcie posiada 2 warstwy ukryte, posiadające kolejno
-12 i 40 neuronów aktywowanych funkcją ReLU, i warstwy wyjściowej złożonej
-z 10 neuronów z funkcją aktywacji softmax. Do stworzenia sieci wykorzystano
+
+Do stworzenia sieci wykorzystano
 bibliotekę TensorFlow. Sieć uczona była na danych
-z \todo{przypis}bazy MNIST składającej się łącznie z 70000 przykładów
-cyfr na obrazach o wielkości 28\(\times \)28 pikseli, z których każdy
+z \todo{przypis}bazy MNIST składającej się łącznie z~70000 przykładów
+cyfr na obrazach o~wielkości 28\(\times \)28 pikseli, z~których każdy
 przedstawiony jest jako wartość od 0 (kolor czarny) do 255 (kolor biały).
 Próbki zostały
 podzielone na zbiór uczący, liczący 60000 próbek, oraz zbiór do testów
 z pozostałych 10000 cyfr. Cyfry składają się z białych pikseli, tło jest czarne.
-Dokonano prób trenowania sieci przetworzonymi danymi, w których kolory były
-odwrócone, natomiast wytrenowane modele w trakcie testów nie przekraczały
+Dokonano prób trenowania sieci przetworzonymi danymi, w~których kolory były
+odwrócone, natomiast wytrenowane modele w~trakcie testów nie przekraczały
 progu czterdziestu procent dobrze zaklasyfikowanych obrazów.
 
 \subsection{hls4ml}
 \subsubsection{Idea hls4ml}
-\begin{figure}[h]
-  \centering
-  \todo[inline]{Wstawić źródło w przypisie}
-  \includegraphics[scale=0.2]{figures/hls4ml.jpg}
-  \caption{Schemat pracy z hls4ml}\label{fig:hls4ml}
-\end{figure}
 Celem projektu hls4ml jest wygenerowanie kodu \CPP{} na podstawie zapisanego
-modelu z TensorFlow.
+modelu z~TensorFlow. Przykładowy schemat pracy z~hls4ml przedstawiony jest
+na rysunku~\ref{fig:hls4ml}.
 Czerwona część schematu pokazuje ogólną organizację pracy przy projektowaniu 
 odpowiedniego modelu uczenia maszynowego. Niebieska część należy do hls4ml,
-który tłumaczy dostarczony model z wagami do syntetyzowalnego kodu, który
+który tłumaczy dostarczony model z~wagami do syntetyzowalnego kodu, który
 następnie można włączyć do większego projektu lub zaimplementować jako
 samodzielną część na FPGA. Generowany projekt jest parametryzowany
-przez plik konfiguracyjny yml zawierający ścieżkę do pliku z zapisanym modelem
-wraz z wagami, typy danych kodujące wartości wag, nazwę docelowego układu FPGA
-raz parametry optymalizacji dotyczące zużycia zasobów --- większa ilość
+przez plik konfiguracyjny yml zawierający ścieżkę do pliku z~zapisanym modelem
+wraz z~wagami, typy danych kodujące wartości wag, nazwę docelowego układu FPGA
+oraz parametry optymalizacji dotyczące zużycia zasobów --- większa ilość
 zasobów oznacza zrównoleglenie większej części obliczeń.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figures/hls4ml.jpg}
+  \caption{Schemat pracy z~hls4ml. \\
+  \textit{Dokumentacja hls4ml},
+  \url{https://fastmachinelearning.org/hls4ml/CONCEPTS.html}}\label{fig:hls4ml}
+\end{figure}
 
 \subsubsection{Precyzja danych}
-Typ danych używany w przekonwertowanym modelu to duże liczby
+Typ danych używany w~przekonwertowanym modelu to duże liczby
 stałoprzecinkowe (\lstinline{ap_fixed}) oraz liczby całkowite
 (\lstinline{ap_int}).
 Precyzję obu typów można ustalić do jednego bita.
-Obliczenia przeprowadzane na liczbach o mniejszej
+Obliczenia przeprowadzane na liczbach o~mniejszej
 precyzji są umożliwiają większe zrównoleglenie obliczeń,
 natomiast zbyt niska precyzja może poskutkować
 bezużytecznością zsyntetyzowanej sieci. Aby odpowiednio dobrać precyzję
-wag skorzystano z pythonowej biblioteki hls4ml.profiling.
+wag skorzystano z~pythonowej biblioteki hls4ml.profiling.
 
-Program korzystający z funkcji dostarczanych przez tę bibliotekę
-analizuje plik konfiguracyjny yml oraz model z pliku h5.
+Program korzystający z~funkcji dostarczanych przez tę bibliotekę
+analizuje plik konfiguracyjny yml oraz model z~pliku h5.
 Wynikiem działania programu jest wykres przedstawiający
-rozkład wartości wag każdej z warstw modelu otrzymanych w procesie trenowania.
-Szare pole w tle wykresu
+rozkład wartości wag każdej z~warstw modelu otrzymanych w~procesie trenowania.
+Szare pole w~tle wykresu
 przedstawia zakres wartości, które obejmowane są przez precyzję określoną
 w pliku konfiguracyjnym. Dobrym punktem początkowym jest wybranie takiej
-liczby bitów dla każdej z warstw, która obejmuje wszystkie możliwe wagi.
-Dalsze ustalanie precyzji można wykonać w trakcie analizy wyników
+liczby bitów dla każdej z~warstw, która obejmuje wszystkie możliwe wagi.
+Dalsze ustalanie precyzji można wykonać w~trakcie analizy wyników
 symulacji.
 \begin{figure}[H]
   \input{figures/dist_of_weights.pgf}
@@ -320,64 +341,64 @@ symulacji.
 \subsection{GStreamer}
 \begin{figure}[h]
   \centering
-  \includegraphics[scale=0.24]{figures/image_flow.png}
+  \includegraphics[width=\linewidth]{figures/image_flow.png}
   \caption{Schemat logiczny przetwarzania obrazu}\label{fig:image_flow}
 \end{figure}
 \begin{figure}[h]
   \centering
-  \includegraphics[scale=0.5625]{figures/pipeline.png}
-  \caption{Schemat grafu. Na zielono plugin z siecią neuronową}\label{fig:pipeline}
+  \includegraphics[width=\linewidth]{figures/pipeline.png}
+  \caption{Schemat grafu. Na zielono plugin z~siecią neuronową}\label{fig:pipeline}
 \end{figure}
 Zsyntetyzowana sieć jest częścią projektu. Potrzebne jest również dostarczenie
 danych do sieci oraz przedstawienie wyniku.
-Do tego celu skorzystano z biblioteki GStreamer, dzięki której można
-tworzyć grafy z komponentów (pluginów, elementów)
-przetwarzających media, zarówno audio jak i video.
-Każdy z elementów grafu składa się z co najmniej jednego źródła (source),
-lub ujścia (sink), może mieć również wiele wejść i wyjść. W grafie pierwszy
+Do tego celu skorzystano z~biblioteki GStreamer, dzięki której można
+tworzyć grafy z~komponentów (pluginów, elementów)
+przetwarzających media, zarówno audio jak i~video.
+Każdy z~elementów grafu składa się z~co najmniej jednego źródła (source),
+lub ujścia (sink), może mieć również wiele wejść i~wyjść. w~grafie pierwszy
 element nie może mieć wejść, natomiast konieczne jest aby posiadał co najmniej
 jedno wyjście. Poprawnie przygotowany graf nie powinien mieć komponentów
-oferujących źródło, które nie są z niczym połączone.
-Pluginy mają ujednolicony interfejs, dzięki czemu można w łatwy sposób
+oferujących źródło, które nie są z~niczym połączone.
+Pluginy mają ujednolicony interfejs, dzięki czemu można w~łatwy sposób
 włączyć do grafu własny element. Wtyczki charakteryzują się
 pewnymi własnościami, znanymi jako „caps”. Określają one jakie 
-media jest w stanie przetworzyć dana wtyczka (na przykład format pikseli,
+media jest w~stanie przetworzyć dana wtyczka (na przykład format pikseli,
 maksymalny rozmiar obrazu). 
 Łączone ze sobą elementy dokonują negocjacji
 parametrów mediów, takich jak rozdzielczość obrazu, format pikseli,
 ilość klatek na sekundę oraz innych.
 
-\subsubsection{xlnxvideosrc i xlnxvideosink}
-Są to pluginy dostarczone przez firmę Xilinx wraz z platformą reVISION.
+\subsubsection{xlnxvideosrc i~xlnxvideosink}
+Są to pluginy dostarczone przez firmę Xilinx wraz z~platformą reVISION.
 Obydwa korzystają biblioteki Xilinx \lstinline{video_lib}
-Pierwszy z nich ułatwia odczytywanie danych ze źródeł, dla których potrzebne
-byłyby dodatkowe działania. Są to między innymi kamera USB (użyta w projekcie),
-HDMI, MIPI CSI (sprzętowy interfejs do transmisji obrazów i wideo).
+Pierwszy z~nich ułatwia odczytywanie danych ze źródeł, dla których potrzebne
+byłyby dodatkowe działania. Są to między innymi kamera USB (użyta w~projekcie),
+HDMI, MIPI CSI (sprzętowy interfejs do transmisji obrazów i~wideo).
 \todo{Przypis UG1221, s.32}
-Sam element zbudowany jest w oparciu o element v4l2src, dostępny
+Sam element zbudowany jest w~oparciu o~element v4l2src, dostępny
 w standardowej instalacji GStreamera.
-Xlnxvideosink również jest oparty o inny element --- kmssink.
-Zapewnia odpowiednią konfigurację połączenia z wyświetlaczami
+Xlnxvideosink również jest oparty o~inny element --- kmssink.
+Zapewnia odpowiednią konfigurację połączenia z~wyświetlaczami
 podłączonymi przez HDMI oraz DisplayPort.
 
 \subsubsection{videoconvert}
 Element mający za zadanie dostosować wszystkie parametry obrazu tak,
 aby móc połączyć ze sobą dwa niekompatybilne pod względem „caps” elementy.
 Ta niekompatybilność może być spowodowana na przykład tym, że dwie
-wtyczki potrzebują innego formatu pikseli i jednocześnie nie oferują
-możliwości konwersji z jednego formatu na inny.
+wtyczki potrzebują innego formatu pikseli i~jednocześnie nie oferują
+możliwości konwersji z~jednego formatu na inny.
 
 \subsubsection{videocrop}
-Wtyczka służąca do wykadrowania obrazu w zdefiniowanym obszarze.
-Wykorzystana została aby otrzymać obraz o tej samej długości
+Wtyczka służąca do wykadrowania obrazu w~zdefiniowanym obszarze.
+Wykorzystana została aby otrzymać obraz o~tej samej długości
 i szerokości wynoszącej 224 (co jest ośmiokrotnością 28, czyli
 długością boku obrazów, którymi wytrenowana została sieć) wycięty
-ze środka wideo o rozmiarze 1920\(\times \)1080.
+ze środka wideo o~rozmiarze 1920\(\times \)1080.
 
 \subsubsection{videoscale}
 Skaluje obraz do wynegocjowanych pomiędzy sąsiadującymi elementami
 parametrów, przy czym pierwsza próba negocjacji to ta sama wielkość
-obrazu przy ujściu jak i w źródle, aby skalowanie nie było potrzebne.
+obrazu przy ujściu jak i~w~źródle, aby skalowanie nie było potrzebne.
 
 \subsubsection{sdxnet}
 Sdxnet to wtyczka wykorzystująca sieć neuronową do rozpoznania cyfr
@@ -387,34 +408,34 @@ zaimplementowany na potrzeby tego projektu.
 \subsubsection{Filter caps}
 Element precyzujący parametry obrazu, które wymuszają
 dostosowanie się poprzedniego elementu --- na przykład videoscale.
-Zapisuje się go w postaci ciągu znaków ujętych w cudzysłów.
+Zapisuje się go w~postaci ciągu znaków ujętych w~cudzysłów.
 
 \subsubsection{videobox}
-Oferuje możliwość osadzenia obrazu w tym o innym rozmiarze
+Oferuje możliwość osadzenia obrazu w~tym o~innym rozmiarze
 rozmiarze wypełniając pozostałą przestrzeń ramką
 w wybranym kolorze. Własność autocrop oznacza automatyczne obliczenie
 wielkości ramek na podstawie parametrów określonych przez kolejny element tak,
-aby obraz przychodzący do videobox był wycentrowany a ramki
+aby obraz przychodzący do videobox był wycentrowany a~ramki
 były tej samej wielkości.
 
 \subsubsection{fpsdisplaysink}
 Wtyczka typu sink (mająca tylko ujście), która jako parametr
 pobiera inną wtyczkę tego typu, np.~xlnxvideosink,
-zastępując w grafie tamtą.
+zastępując w~grafie tamtą.
 Jej użycie pozwala na sprawdzenie liczby klatek na sekundę
 wyświetlanego obrazu.
 
 
 \todo[inline]{Todo: schemat fizyczny: hdmi -> arm (wtyczki) ->
-dane do sieci -> ...}
+dane do sieci -> \ldots} 
 
 \subsection{Używanie sieci}
 \subsubsection{Generowanie projektu}
-Architekturę sieci wraz z wagami zapisano do pliku h5. Stworzono
+Architekturę sieci wraz z~wagami zapisano do pliku h5. Stworzono
 plik konfiguracyjny hls4ml. Następnie na jego podstawie wygenerowano projekt
 z przekonwertowaną siecią. Wśród wygenerowanych plików znajduje się
 również kod służący do symulacji działania projektu. Przygotowane zostały
-pliki z danymi testującymi sieć --- 10000 przetworzonych przykładów z bazy
+pliki z~danymi testującymi sieć --- 10000 przetworzonych przykładów z~bazy
 MNIST tak, aby cyfry były koloru czarnego, tło białego. Zakres wartości
 wynosi od 0 do 255.
 
@@ -435,27 +456,27 @@ obliczone predykcje.
 \end{minipage}
 
 \subsubsection{Interfejs}
-Aby móc korzystać z sieci w aplikacji uruchamianej na procesorze ARM
+Aby móc korzystać z~sieci w~aplikacji uruchamianej na procesorze ARM
 zadeklarowano użycie interfejsu IO \mbox{AXI-4} Lite.
 
 \subsubsection{Dostosowanie sieci}
 W celu poprawienia wyników działania sieci dokonano pewnych usprawnień.
-Sieć została wytrenowana oryginalnymi danymi, w których piksele tworzące
+Sieć została wytrenowana oryginalnymi danymi, w~których piksele tworzące
 cyfry mają wartości równe 255 lub tej wartości bliskie,
 a piksele białego są przedtawione jako 0.
-Ponadto rzeczywiste dane z kamery mogą być zaszumione,
-przedstawione obiekty zacienione, a same cyfry mogą nie być idealnie czarne.
+Ponadto rzeczywiste dane z~kamery mogą być zaszumione,
+przedstawione obiekty zacienione, a~same cyfry mogą nie być idealnie czarne.
 
 Przy każdym wywołaniu funkcji sieci dokonywana jest transformacja
 danych poprzez kod pokazany na listingu~\ref{lst:data_tresh}.
 Wartość każdego piksela jest zamieniana na wartość 255 lub 0, zależnie
 od początkowej jego wartości --- dla wartości mniejszych od 140
 (kolor szary lub ciemniejszy) przypisany jest kolor biały, wartość 255.
-Dla pikseli jasnych (od 140 w górę) przypisywana wartość to 0, kolor czarny.
+Dla pikseli jasnych (od 140 w~górę) przypisywana wartość to 0, kolor czarny.
 
 W ten sposób dokonuje się zarówno odpowiedniego przetworzenia danych
 uwzględniającego sposób wytrenowania modelu, jak również uwydatnienia
-cyfry oraz pozbycia się szumów obrazu i jasnych cieni.
+cyfry oraz pozbycia się szumów obrazu i~jasnych cieni.
 
 \hspace{-1cm}
 \begin{minipage}{\linewidth}
@@ -469,7 +490,7 @@ cyfry oraz pozbycia się szumów obrazu i jasnych cieni.
 ]{listings/nn.cpp}
 \begin{itemize}
   \setlength{\itemindent}{3em}
-  \item \lstinline[style=hls]{input[]} --- tablica z danymi (parametr funkcji)
+  \item \lstinline[style=hls]{input[]} --- tablica z~danymi (parametr funkcji)
   \item \lstinline[style=hls]{input1[]} --- dane przetwarzane przez sieć
 \end{itemize}
 \end{minipage}
@@ -477,13 +498,13 @@ cyfry oraz pozbycia się szumów obrazu i jasnych cieni.
 \subsubsection{Tworzenie biblioteki}
 \begin{figure}[h]
   \centering
-  \includesvg[scale=0.5]{figures/sdx_pack-scheme}
+  \includesvg[width=\linewidth]{figures/sdx_pack-scheme}
   \caption{Schemat tworzenia biblioteki}\label{fig:ccall}
 \end{figure}
-Zsyntetyzowany moduł sieci został wyeksportowany w środowisku Vivado HLS
+Zsyntetyzowany moduł sieci został wyeksportowany w~środowisku Vivado HLS
 do paczki IP (Intelectual Property). Następnie poprzez narzędzie
 \lstinline{sdx_pack} utworzono statyczną bibliotekę gotową do wykorzystania
-w innym projekcie w środowisku SDSoC (Software-Defined System on Chip,
+w innym projekcie w~środowisku SDSoC (Software-Defined System on Chip,
 IDE do pisania aplikacji lub bibliotek uruchamianych na platformach
 Xilinx MPSoC).
 
@@ -497,37 +518,155 @@ Xilinx MPSoC).
 Wywołując narzędzie \lstinline{sdx_pack} należy podać plik nagłówkowy funkcji,
 docelową nazwę biblioteki, mapowanie parametrów funkcji na porty modułu,
 ścieżkę do pliku \lstinline{component.xml} wygenerowanego podczas eksportu
-do paczki IP, protokół kontroli modułu, odpowiedni zegar, a informacje
+do paczki IP, protokół kontroli modułu, odpowiedni zegar, a~informacje
 dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
 
 \subsection{Część neuralnet}
-Czytanie obrazu, podział na część luma i chroma, wywołanie funkcji sieci,
-zapis z powrotem, synteza do biblioteki dzielonej „.so”
+Czytanie obrazu, podział na część luma i~chroma, wywołanie funkcji sieci,
+zapis z~powrotem, synteza do biblioteki dzielonej „.so”
 
 \subsection{Część gstsdxnet}
-De facto plugin gstreamera, w którym są wywoływane funkcje z biblioteki
+De facto plugin gstreamera, w~którym są wywoływane funkcje z~biblioteki
 dzielonej neuralnet.so, 
 
 \subsection{Małe podsumowanie}
 
 
 \newpage
-\section{Wyniki i dyskusja}
+\section{Wyniki i~dyskusja}
+W~tym rozdziale przedstawione są wyniki prezentujące dokładność
+predykcji dokonywanych przez model na różnych etapach implementacji
+projektu zaczynając od testach w Pythonie, a~kończąc na sprawdzeniu
+działania w~pełni zaimplementowanego projektu.
 
 \subsection{Ewaulacja modelu}
-Wyniki z samego pythona z danymi testowymi z mnista
+Do testów w Pythonie użyto 10000 próbek z~bazy MNIST, którymi nie
+wytrenowano modelu. Osiągnięta dokładność wynosi 92,22\%. Używając większych
+modeli można osiągnąć zdecydowanie wyższy wynik --- dla sieci \mbox{LeNet-5}
+zdołano otrzymać dokładność 99,18\% --- ale z~wcześniej
+wspomnianych powodów nie wykorzystano takiej architektury.
 
 \subsection{Symulacja}
-Tutaj wyniki z symulacji z danymi testowymi z mnista
+Kolejne testy przeprowadzono po konwersji modelu sieci do kodu \CPP{}
+przez hls4ml. Danymi testowymi były te same próbki z bazy MNIST.
+Liczba dobrze sklasyfikowanych cyfr spadła --- osiągnięto 90,52\%
+dokładności.
 
 \subsection{Dane rzeczywiste}
-Wyniki z kamerki. Zdjęcia danych testowych, co wpływa na wynik, czy wszystko
-rozpoznaje itd,
+Kompletny projekt przetestowano na zbiorze liczącym 20 cyfr (patrz
+rys.~\ref{fig:test_data}). Cyfry
+zapisano odręcznie czarnym markerem na białym papierze. Dla każdej z nich
+dokonano pomiarów, a uzyskane wyniki zapisano \todo{Referencja} w~tabeli.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/test_data.jpg}
+  \caption{Przygotowane zestawy danych testowych}\label{fig:test_data}
+\end{figure}
+
+
+\subsubsection{Tabela z wynikami}
+Dla każdej z cyfr wykonano kilkadziesiąt odczytów. W tabeli~\ref{tab:results}
+podane są najistotniejsze z nich.
+Pierwsza kolumna oznacza rzeczywistą cyfrę. W kolumnach „zestaw A” i „zestaw B”
+podane wyniki dla cyfr z zestawów przedstawionych
+na rysunku~\ref{fig:test_data}.
+Każda komórka zawiera maksymalną odczytaną wartość prawdopodobieństwa
+przynależności do danej klasy (lub „nie rozpoznano” jeśli sieć ani razu
+nie rozpoznała poprawnie cyfry)
+oraz wszystkie wystąpienia błędnych predykcji wraz z odpowiadającym im
+największymi odczytami prawdopodobieństwa (o ile takie wystąpiły).
+Ze względu na użyty typ danych w ostatniej warstwie sieci
+wyniki otrzymano z dokładnością do 6,25 punkta procentowego.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ r r r }
+  Cyfra & zestaw A & zestaw B \\ [0.5ex]
+  \toprule 
+  0  
+  & 97,5\%
+  & \begin{tabular}{@{}r@{}r@{}}97,5\% \\ „3” 67,5\% \\ „2” 62,5\% \end{tabular}
+    \\ \midrule
+  1  
+  & \begin{tabular}{@{}r@{}}nie rozpoznano\\ „7” 81,25\% \end{tabular}
+  & \begin{tabular}{@{}r@{}}92,5\% \\ „7” 62,5\% \end{tabular}
+    \\ \midrule
+  2
+  & \begin{tabular}{@{}r@{}}100\% \\ „3” 50\% \end{tabular}
+  & 100\%
+    \\ \midrule
+  3
+  & 100\%
+  & 100\%
+    \\ \midrule
+  4
+  & \begin{tabular}{@{}r@{}}92,5\% \\ „9” 92,5\% \end{tabular}
+  & \begin{tabular}{@{}r@{}}do 37,5\% \\ różne cyfry do 60\% \end{tabular}
+    \\ \midrule
+  5
+  & \begin{tabular}{@{}r@{}r@{}}62,5\% \\ „2” 43,75\% \\ „3” 37,5\% \end{tabular}
+  & \begin{tabular}{@{}r@{}r@{}}87,5\% \\ „6” 56,25\% \\ „3” 31,25\% \end{tabular}
+    \\ \midrule
+  6
+  & 87,5\%
+  & \begin{tabular}{@{}r@{}}100\% \\ „2” 62,5\%  \end{tabular}
+    \\ \midrule
+  7
+  & \begin{tabular}{@{}r@{}r@{}}nie rozpoznano\\ „6” 93,75\% \\ „2” 62,5\%  \end{tabular}
+  & 100\%
+    \\ \midrule
+  8
+  & 93,75\%
+  & \begin{tabular}{@{}r@{}r@{}}93,75\% \\ „3” 75\% \\ „9” 43,75\%  \end{tabular}
+    \\ \midrule
+  9
+  & \begin{tabular}{@{}r@{}r@{}}nie rozpoznano\\ „3” 93,75\% \\ „8” 87,5\%  \end{tabular}
+  & \begin{tabular}{@{}r@{}r@{}}nie rozpoznano\\ „3” 87,5\% \\ „2” 56,25\%  \end{tabular}
+    \\ 
+  \bottomrule
+\end{tabular}
+  \caption{Wyniki dla danych rzeczywistych z kamery}\label{tab:results}
+\end{table}
+
+\subsubsection{Omówienie wyników}\label{sec:omowienie_wynikow}
+Dla 20 cyfr otrzymano 14 wyników z prawdopodobieństwem wynoszącym
+co najmniej 87,5\%. Dla cyfr „2” i „3” uzyskano wiele odczytów
+ze stuprocentowym prawdopodobieństwem dla obydwu zestawów. Cyfry „0”, „6” i~„8”
+również były w większości odczytów poprawnie kwalifikowane. Małe problemy
+nastąpiły przy próbach odczytu cyfr „1”, „4” i „7”, w których sieć nie była
+w stanie poprawnie określić klasy, natomiast poprawnie odczytywała tę cyfrę
+z drugiego zestawu. Jedynie cyfra „9” nie została w żadnym z przypadków
+rozpoznana, ponadto błędnie odczytywana jako cyfra „3” z obu zestawów.
+
+Każda próba pomiaru cyfry dawała wiele wyników w zależności od położenia
+cyfry na obrazie, jej grubości, kąta pod jakim jest nagrywana. Pomiary starano
+robić się tak, aby środek cyfry pokrywał się ze środkiem obrazu, a także
+żeby cyfra nie stykała się z jego krawędzią. Dla wszystkich próbek sprawdzano
+różne odległości, przesunięcia cyfry względem środka obrazu i kąty.
+Zauważono, że przy kilku próbkach, szczególnie dla cyfry „5”,
+najmniejsze poruszenie kamery
+wynikające z niestabilności ręki wpływało w znacznym stopniu na predykcję.
+
+\subsection{Dyskusja}
+Na każdym z etapów implementacji można zauważyć spadek dokładności sieci.
+Po przetłumaczeniu modelu sieci przez hls4ml jest to głównie spowodowane
+zmniejszeniem precyzji danych na jakich sieć dokonuje obliczeń, z kolei
+na ostatnim etapie spadek związany jest z możliwymi szumami obrazu,
+niewystarczająco dobrym nakierowaniu kamery na cyfrę, złym oświetleniu lub
+innymi zewnętrznymi przyczynami. Sieć o tak stosunkowo małej architekturze
+może mieć problem z rozpoznawaniem cyfr o takim kształcie i położeniu
+na obrazie, z którym nie miała do czynienia w trakcie trenowania.
+Możliwym rozwiązaniem tych problemów mogłoby być zastosowanie sieci
+splotowej (konwolucyjnej), na przykład \mbox{LeNet-5}, która nie tylko
+osiąga zdecydowanie wyższy wynik w trakcie ewaluacji ale również lepiej
+radzi sobie z generalizowaniem kształtów znajdujących się na obrazie.
+
 
 \newpage
 \section{Podsumowanie}
-W projekcie zostało zrobione to i to. Wyszło to tak i tak. Problem sprawiło
-tamto i owamto. Można to poprawić w ten sposób. Można część funkcjonalności
+W projekcie zostało zrobione to i~to. Wyszło to tak i~tak. Problem sprawiło
+tamto i~owamto. Można to poprawić w~ten sposób. Można część funkcjonalności
 z pipeline przenieść na fpga (w końcu przetwarzanie obrazu na fpga jest szybkie)
 
 \end{document}
