@@ -630,20 +630,20 @@ wyniki otrzymano z dokładnością do 6,25 punkta procentowego.
 \end{table}
 
 \subsubsection{Omówienie wyników}\label{sec:omowienie_wynikow}
-Dla 20 cyfr otrzymano 14 wyników z prawdopodobieństwem wynoszącym
-co najmniej 87,5\%. Dla cyfr „2” i „3” uzyskano wiele odczytów
+Dla 14 spośród 20 cyfr otrzymano wyniki z prawdopodobieństwem wynoszącym
+co najmniej 87,5\%. Dla cyfr „2” i~„3” uzyskano wiele odczytów
 ze stuprocentowym prawdopodobieństwem dla obydwu zestawów. Cyfry „0”, „6” i~„8”
-również były w większości odczytów poprawnie kwalifikowane. Małe problemy
-nastąpiły przy próbach odczytu cyfr „1”, „4” i „7”, w których sieć nie była
+również były w~większości odczytów poprawnie kwalifikowane. Małe problemy
+nastąpiły przy próbach odczytu cyfr „1”, „4” i~„7”, w których sieć nie była
 w stanie poprawnie określić klasy, natomiast poprawnie odczytywała tę cyfrę
-z drugiego zestawu. Jedynie cyfra „9” nie została w żadnym z przypadków
-rozpoznana, ponadto błędnie odczytywana jako cyfra „3” z obu zestawów.
+z drugiego zestawu. Jedynie cyfra „9” nie została w żadnym z~przypadków
+rozpoznana, ponadto błędnie odczytywana jako cyfra „3” z~obu zestawów.
 
 Każda próba pomiaru cyfry dawała wiele wyników w zależności od położenia
 cyfry na obrazie, jej grubości, kąta pod jakim jest nagrywana. Pomiary starano
-robić się tak, aby środek cyfry pokrywał się ze środkiem obrazu, a także
-żeby cyfra nie stykała się z jego krawędzią. Dla wszystkich próbek sprawdzano
-różne odległości, przesunięcia cyfry względem środka obrazu i kąty.
+robić się tak, aby środek cyfry pokrywał się ze środkiem obrazu, a~także
+żeby cyfra nie stykała się z~jego krawędzią. Dla wszystkich próbek sprawdzano
+różne odległości, przesunięcia cyfry względem środka obrazu i~kąty.
 Zauważono, że przy kilku próbkach, szczególnie dla cyfry „5”,
 najmniejsze poruszenie kamery
 wynikające z niestabilności ręki wpływało w znacznym stopniu na predykcję.
@@ -651,11 +651,11 @@ wynikające z niestabilności ręki wpływało w znacznym stopniu na predykcję.
 \subsection{Dyskusja}
 Na każdym z etapów implementacji można zauważyć spadek dokładności sieci.
 Po przetłumaczeniu modelu sieci przez hls4ml jest to głównie spowodowane
-zmniejszeniem precyzji danych na jakich sieć dokonuje obliczeń, z kolei
-na ostatnim etapie spadek związany jest z możliwymi szumami obrazu,
+zmniejszeniem precyzji danych na jakich sieć dokonuje obliczeń. 
+Na ostatnim etapie spadek związany jest z możliwymi szumami obrazu,
 niewystarczająco dobrym nakierowaniu kamery na cyfrę, złym oświetleniu lub
-innymi zewnętrznymi przyczynami. Sieć o tak stosunkowo małej architekturze
-może mieć problem z rozpoznawaniem cyfr o takim kształcie i położeniu
+innymi zewnętrznymi przyczynami. Sieć o~tej stosunkowo małej architekturze
+może mieć problem z~rozpoznawaniem cyfr o~takim kształcie i~położeniu
 na obrazie, z którym nie miała do czynienia w trakcie trenowania.
 Możliwym rozwiązaniem tych problemów mogłoby być zastosowanie sieci
 splotowej (konwolucyjnej), na przykład \mbox{LeNet-5}, która nie tylko
