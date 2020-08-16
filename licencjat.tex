@@ -27,8 +27,8 @@
 \usepackage{xcolor}
 \definecolor{mybackground}{rgb}{0.15, 0.15, 0.13}
 \definecolor{mytext}{rgb}{0.94, 0.94, 0.92}
-\pagecolor{mybackground}
-\color{mytext}
+% \pagecolor{mybackground}
+% \color{mytext}
 
 \usepackage[
   color=orange!30,
@@ -332,9 +332,9 @@ liczby bitów dla każdej z~warstw, która obejmuje wszystkie możliwe wagi.
 Dalsze ustalanie precyzji można wykonać w~trakcie analizy wyników
 symulacji.
 \begin{figure}[H]
+  \centering
   \input{figures/dist_of_weights.pgf}
   \caption{Rozkład wartości wag modelu}\label{fig:weights_dist}
-  \centering
 \end{figure}
 
 
@@ -499,7 +499,9 @@ cyfry oraz pozbycia się szumów obrazu i~jasnych cieni.
 \begin{figure}[h]
   \centering
   \includesvg[width=\linewidth]{figures/sdx_pack-scheme}
-  \caption{Schemat tworzenia biblioteki}\label{fig:ccall}
+  \caption{Schemat tworzenia biblioteki \\
+  Za \textit{SDSoC Environment User Guide: C-Callable IP Libraries},
+  \url{https://china.xilinx.com/html_docs/xilinx2018_3/sdsoc_doc/c-callable-libraries-zah1504034388097.html}}\label{fig:hls4ml}
 \end{figure}
 Zsyntetyzowany moduł sieci został wyeksportowany w~środowisku Vivado HLS
 do paczki IP (Intelectual Property). Następnie poprzez narzędzie
@@ -522,7 +524,12 @@ docelową nazwę biblioteki, mapowanie parametrów funkcji na porty modułu,
 do paczki IP, protokół kontroli modułu, odpowiedni zegar, i~informacje
 dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
 
-\subsection{Implementacja pluginu \texttt{sdxnet}}
+\subsection{Implementacja pluginu sdxnet}
+\todo[inline]{Tutaj też bym wstawił schemat: trzy kolumny, dwie z uproszczonym
+kodem gstsdxnet i neuralnet, trzecia bloczki przedstawiające funkcje na PL.
+Do tego strzałki między wywoływaniem jakiejś funkcji a jej definicją. \\
+Bo gstsdxnet wywołuje różne funkcje z neuralnet, w której z kolei są
+wywoływane funkcje akcelerowane i schemat ułatwi zrozumienie.}
 Dalsza część implementacji składa się z dwóch części.
 Pierwsza z nich to \lstinline{neuralnet}, biblioteka statyczna, która
 odpowiada za inicjalizację i zwolnienie pamięci dla danych, z których
@@ -580,11 +587,26 @@ klatki obrazu na standardowe wyjście zapisywany jest wynik predykcji
 w postaci pary liczb (przewidywana cyfra, prawdopodobieństwo). 
 
 Kod wtyczki oparto o kod przykładowej wtyczki dostarczonej wraz
-z platformą reVISION przez Xilinx.
+z platformą reVISION \mbox{2018-3} przez Xilinx.
 
-\subsubsection{script.sh}
-\todo[inline]{Opisz swój skrypcik}
-\todo[inline]{Dopisz do skryptu export gst\_debug }
+\subsection{Uruchamianie}
+Aby uruchomić pipeline przedstawiony na rysunku~\ref{fig:pipeline}
+można skorzystać z narzędzia \lstinline{gst-launch-1.0}.
+Narzędzie ułatwia i przyspiesza uruchamianie różnych strumieni
+przetwarzających media, ponieważ nie ma potrzeby zaprogramowania
+aplikacji. Narzędzie jako argumenty wywołania programu pobiera
+nazwy pluginów oddzielone znakiem wykrzyknika
+w~kolejności w~jakiej mają wystąpić w~grafie. Skrypt przedstawiono
+na listingu~\ref{lst:script} na stronie~\pageref{lst:script}.
+
+% \hspace{1cm}
+\begin{minipage}{\linewidth}
+\lstinputlisting[
+  caption={Skrypt uruchamiający cały projekt},
+  label={lst:script},
+  showstringspaces=false
+]{listings/script.sh}
+\end{minipage}
 
 
 \newpage
