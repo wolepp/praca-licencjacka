@@ -27,8 +27,8 @@
 \usepackage{xcolor}
 \definecolor{mybackground}{rgb}{0.15, 0.15, 0.13}
 \definecolor{mytext}{rgb}{0.94, 0.94, 0.92}
-% \pagecolor{mybackground}
-% \color{mytext}
+\pagecolor{mybackground}
+\color{mytext}
 
 \usepackage[
   color=orange!30,
@@ -351,7 +351,7 @@ symulacji.
 \end{figure}
 Zsyntetyzowana sieć jest częścią projektu. Potrzebne jest również dostarczenie
 danych do sieci oraz przedstawienie wyniku.
-Do tego celu skorzystano z~biblioteki GStreamer, dzięki której można
+Do tego celu skorzystano z~frameworka GStreamer, dzięki której można
 tworzyć grafy z~komponentów (pluginów, elementów)
 przetwarzających media, zarówno audio jak i~video.
 Każdy z~elementów grafu składa się z~co najmniej jednego źródła (source),
@@ -439,8 +439,8 @@ pliki z~danymi testującymi sieć --- 10000 przetworzonych przykładów z~bazy
 MNIST tak, aby cyfry były koloru czarnego, tło białego. Zakres wartości
 wynosi od 0 do 255.
 
-\subsubsection{Funkcja}
-Cała sieć jest przedstawiona jako jedna funkcja.
+\subsubsection{Funkcja}\label{section:funkcja}
+Cała sieć jest przedstawiona jako jedna funkcja o nazwie \lstinline{nn}.
 Parametrami tej funkcji są dwie tablice:
 \lstinline[style=hls]{input[]}, do której są zapisywane są
 dane do przetworzenia,
@@ -495,7 +495,7 @@ cyfry oraz pozbycia się szumów obrazu i~jasnych cieni.
 \end{itemize}
 \end{minipage}
 
-\subsubsection{Tworzenie biblioteki}
+\subsubsection{Tworzenie biblioteki}\label{section:create_library}
 \begin{figure}[h]
   \centering
   \includesvg[width=\linewidth]{figures/sdx_pack-scheme}
@@ -508,7 +508,8 @@ w innym projekcie w~środowisku SDSoC (Software-Defined System on Chip,
 IDE do pisania aplikacji lub bibliotek uruchamianych na platformach
 Xilinx MPSoC).
 
-\begin{minipage}{\linewidth}
+\hspace{1mm}
+\begin{minipage}{0.95\linewidth}
 \lstinputlisting[
   caption={Narzędzie sdx\_pack},
   label={lst:sdx_pack},
@@ -518,18 +519,72 @@ Xilinx MPSoC).
 Wywołując narzędzie \lstinline{sdx_pack} należy podać plik nagłówkowy funkcji,
 docelową nazwę biblioteki, mapowanie parametrów funkcji na porty modułu,
 ścieżkę do pliku \lstinline{component.xml} wygenerowanego podczas eksportu
-do paczki IP, protokół kontroli modułu, odpowiedni zegar, a~informacje
+do paczki IP, protokół kontroli modułu, odpowiedni zegar, i~informacje
 dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
 
-\subsection{Część neuralnet}
-Czytanie obrazu, podział na część luma i~chroma, wywołanie funkcji sieci,
-zapis z~powrotem, synteza do biblioteki dzielonej „.so”
+\subsection{Implementacja pluginu \texttt{sdxnet}}
+Dalsza część implementacji składa się z dwóch części.
+Pierwsza z nich to \lstinline{neuralnet}, biblioteka statyczna, która
+odpowiada za inicjalizację i zwolnienie pamięci dla danych, z których
+korzystają funkcje akcelerowane sprzętowo,
+wyciągnięcie danych dotyczących luminacji z obrazu,
+wywołanie funkcji \lstinline{nn} (patrz rozdział~\ref{section:funkcja}) oraz
+za utworzenie obrazu wychodzącego z pluginu.
+Druga część to biblioteka dzielona \lstinline{gstsdxnet}, korzystająca
+z funkcji z biblioteki \lstinline{neuralnet}. Biblioteka ta jest rozpoznawana
+jako plugin GStreamer, można więc z niej korzystać przy budowaniu
+grafów za pomocą GStreamera.
 
-\subsection{Część gstsdxnet}
-De facto plugin gstreamera, w~którym są wywoływane funkcje z~biblioteki
-dzielonej neuralnet.so, 
+\subsubsection{neuralnet}
+Dane obrazu (kanał luminacji i kanał chrominacji)
+przechowywane są w~obiektach klasy \lstinline{xf::Mat} będącej
+częścią bibliotek xfOpenCV. Określona jest wysokość oraz szerokość obrazu,
+typ pikseli kodujących obraz (w~tym przypadku ośmiobitowe bez znaku
+z~jednym kanałem pikseli). Pamięć dla tych obiektów oraz dla tablicy
+przechowującej predykcje sieci alokowana jest przez
+funkcję \lstinline{net_init_sds}, a zwalniana przez funkcję
+\lstinline{net_deinit_sds}. Dla każdej klatki obrazu z poziomu
+\lstinline{gstsdxnet} wywoływane są kolejno trzy funkcje:
+\lstinline{net_sds_read},
+\lstinline{net_sds_predict} oraz
+\lstinline{net_sds_write}.
 
-\subsection{Małe podsumowanie}
+Pierwsza z nich rozkodowuje przy pomocy masek i przesunięć bitowych
+dane z pikseli i zapisuje je do dwóch kanałów (obiektów \lstinline{xf::Mat}).
+Ostatnia, również używając tych samych bitowych operacji, łączy obydwa kanały
+tworząc wyjściowy obraz, przy czym dla kanału luminacji są to dokładnie te
+same dane, natomiast wszystkie bajty kanału chrominacji mają wartość 128,
+aby wyjściowy obraz był w skali szarości (aby obraz na monitorze był bardziej
+zbliżony do tego rzeczywiście przetwarzanego).
+Obydwie funkcje korzystają z funkcji akcelerowanych
+sprzętowo aby zrównoleglić i przyspieszyć w ten sposób proces.
+Funkcja \lstinline{net_sds_predict} wywołuje funkcję \lstinline{nn} oraz
+kopiuje otrzymane predykcje do tablicy otrzymanej z \lstinline{gstsdxnet}.
+
+Przy kompilacji biblioteki należy dołączyć bibliotekę statyczną
+powstałą w procesie opisanym w rozdziale~\ref{section:create_library}.
+
+\subsubsection{gstsdxnet}
+Framework GStreamer jest w stanie rozpoznać bibliotekę \lstinline{gstsdxnet}
+dzięki napisaniu funkcji spełniających wymagania stawiane przez framework.
+Obejmują one inicjalizację pluginu (m.in.~alokacja pamięci, zdefiniowanie
+możliwych parametrów mediów na wejściu i na wyjściu, zapisanie
+metadanych), funkcję
+przetwarzającą klatki obrazu oraz te odpowiadające za prawidłowe zakończenie
+pracy wtyczki. Funkcja inicjalizująca plugin uruchamia też funkcję
+inicjalizującą z biblioteki \lstinline{neuralnet}.
+Funkcja przetwarzająca obraz (\lstinline{gst_sdx_process_frames}
+przygotowuje dane, które przekazuje do
+odpowiednich funkcji z \lstinline{neuralnet}. Dla co dwudziestej piątej
+klatki obrazu na standardowe wyjście zapisywany jest wynik predykcji
+w postaci pary liczb (przewidywana cyfra, prawdopodobieństwo). 
+
+Kod wtyczki oparto o kod przykładowej wtyczki dostarczonej wraz
+z platformą reVISION przez Xilinx.
+
+\subsubsection{script.sh}
+\todo[inline]{Opisz swój skrypcik}
+\todo[inline]{Dopisz do skryptu export gst\_debug }
 
 
 \newpage
@@ -556,7 +611,7 @@ dokładności.
 Kompletny projekt przetestowano na zbiorze liczącym 20 cyfr (patrz
 rys.~\ref{fig:test_data}). Cyfry
 zapisano odręcznie czarnym markerem na białym papierze. Dla każdej z nich
-dokonano pomiarów, a uzyskane wyniki zapisano \todo{Referencja} w~tabeli.
+dokonano pomiarów, a uzyskane wyniki zapisano w~tabeli~\ref{tab:results}.
 
 \begin{figure}[h]
   \centering
