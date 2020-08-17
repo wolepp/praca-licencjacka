@@ -12,7 +12,8 @@
 \usepackage[]{graphics}
 \usepackage[]{svg}
 \usepackage{booktabs}
-\usepackage[justification=centering,tablename=Tabela]{caption}
+\usepackage[tablename=Tabela,margin=0.05\linewidth]{caption}
+\usepackage[]{enumitem}
 
 \usepackage[hidelinks]{hyperref}
 \hypersetup{
@@ -188,6 +189,7 @@ wyostrzenia obrazów, itp.
 Jest wiele modeli przestrzeni barw (a co za tym idzie, sposobów kodowania
 pikseli) między innymi:
 \begin{itemize}
+  \setlength\itemsep{0.0em}
   \item RGB, używany w~aparatach, skanerach, telewizorach
   \item CMYK, używany w~druku wielobarwnym
   \item HSV
@@ -304,7 +306,7 @@ oraz parametry optymalizacji dotyczące zużycia zasobów --- większa ilość
 zasobów oznacza zrównoleglenie większej części obliczeń.
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{figures/hls4ml.jpg}
+  \includegraphics[width=0.95\linewidth]{figures/hls4ml.jpg}
   \caption{Schemat pracy z~hls4ml. \\
   \textit{Dokumentacja hls4ml},
   \url{https://fastmachinelearning.org/hls4ml/CONCEPTS.html}}\label{fig:hls4ml}
@@ -341,12 +343,12 @@ symulacji.
 \subsection{GStreamer}
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{figures/image_flow.png}
+  \includegraphics[width=0.95\linewidth]{figures/image_flow.png}
   \caption{Schemat logiczny przetwarzania obrazu}\label{fig:image_flow}
 \end{figure}
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{figures/pipeline.png}
+  \includegraphics[width=0.9\linewidth]{figures/pipeline.png}
   \caption{Schemat grafu. Na zielono plugin z~siecią neuronową}\label{fig:pipeline}
 \end{figure}
 Zsyntetyzowana sieć jest częścią projektu. Potrzebne jest również dostarczenie
@@ -426,9 +428,6 @@ Jej użycie pozwala na sprawdzenie liczby klatek na sekundę
 wyświetlanego obrazu.
 
 
-\todo[inline]{Todo: schemat fizyczny: hdmi -> arm (wtyczki) ->
-dane do sieci -> \ldots} 
-
 \subsection{Używanie sieci}
 \subsubsection{Generowanie projektu}
 Architekturę sieci wraz z~wagami zapisano do pliku h5. Stworzono
@@ -495,13 +494,14 @@ cyfry oraz pozbycia się szumów obrazu i~jasnych cieni.
 \end{itemize}
 \end{minipage}
 
+\newpage
 \subsubsection{Tworzenie biblioteki}\label{section:create_library}
 \begin{figure}[h]
   \centering
-  \includesvg[width=\linewidth]{figures/sdx_pack-scheme}
+  \includesvg[width=0.9\linewidth]{figures/sdx_pack-scheme}
   \caption{Schemat tworzenia biblioteki \\
   Za \textit{SDSoC Environment User Guide: C-Callable IP Libraries},
-  \url{https://china.xilinx.com/html_docs/xilinx2018_3/sdsoc_doc/c-callable-libraries-zah1504034388097.html}}\label{fig:hls4ml}
+  \url{https://china.xilinx.com/html_docs/xilinx2018_3/sdsoc_doc/c-callable-libraries-zah1504034388097.html}}\label{fig:ccallable}
 \end{figure}
 Zsyntetyzowany moduł sieci został wyeksportowany w~środowisku Vivado HLS
 do paczki IP (Intelectual Property). Następnie poprzez narzędzie
@@ -525,11 +525,13 @@ do paczki IP, protokół kontroli modułu, odpowiedni zegar, i~informacje
 dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
 
 \subsection{Implementacja pluginu sdxnet}
-\todo[inline]{Tutaj też bym wstawił schemat: trzy kolumny, dwie z uproszczonym
-kodem gstsdxnet i neuralnet, trzecia bloczki przedstawiające funkcje na PL.
-Do tego strzałki między wywoływaniem jakiejś funkcji a jej definicją. \\
-Bo gstsdxnet wywołuje różne funkcje z neuralnet, w której z kolei są
-wywoływane funkcje akcelerowane i schemat ułatwi zrozumienie.}
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth,
+    trim={3cm 4cm 2.5cm 3cm}, clip]
+  {figures/kod-scheme.pdf}
+  \caption{Schemat przetwarzania danych}\label{fig:code-scheme}
+\end{figure}
 Dalsza część implementacji składa się z dwóch części.
 Pierwsza z nich to \lstinline{neuralnet}, biblioteka statyczna, która
 odpowiada za inicjalizację i zwolnienie pamięci dla danych, z których
@@ -540,7 +542,8 @@ za utworzenie obrazu wychodzącego z pluginu.
 Druga część to biblioteka dzielona \lstinline{gstsdxnet}, korzystająca
 z funkcji z biblioteki \lstinline{neuralnet}. Biblioteka ta jest rozpoznawana
 jako plugin GStreamer, można więc z niej korzystać przy budowaniu
-grafów za pomocą GStreamera.
+grafów za pomocą GStreamera. Schemat wykonywania kodu przedstawiony jest
+na rysunku~\ref{fig:code-scheme} na stronie~\pageref{fig:code-scheme}.
 
 \subsubsection{neuralnet}
 Dane obrazu (kanał luminacji i kanał chrominacji)
@@ -589,6 +592,16 @@ w postaci pary liczb (przewidywana cyfra, prawdopodobieństwo).
 Kod wtyczki oparto o kod przykładowej wtyczki dostarczonej wraz
 z platformą reVISION \mbox{2018-3} przez Xilinx.
 
+\begin{figure}[h]
+  \centering
+  \includesvg[width=0.9\linewidth]{figures/physical-scheme.svg}
+  \caption{Uproszczony schemat przedstawiający działanie
+  projektu na sprzęcie.
+  Czarnymi strzałkami oznaczono pomiędzy jakimi elementami
+  następuje wymiana danych, na czerwono kontrolę procesora}\label{fig:physical-scheme}
+\end{figure}
+
+
 \subsection{Uruchamianie}
 Aby uruchomić pipeline przedstawiony na rysunku~\ref{fig:pipeline}
 można skorzystać z narzędzia \lstinline{gst-launch-1.0}.
@@ -618,10 +631,7 @@ działania w~pełni zaimplementowanego projektu.
 
 \subsection{Ewaulacja modelu}
 Do testów w Pythonie użyto 10000 próbek z~bazy MNIST, którymi nie
-wytrenowano modelu. Osiągnięta dokładność wynosi 92,22\%. Używając większych
-modeli można osiągnąć zdecydowanie wyższy wynik --- dla sieci \mbox{LeNet-5}
-zdołano otrzymać dokładność 99,18\% --- ale z~wcześniej
-wspomnianych powodów nie wykorzystano takiej architektury.
+wytrenowano modelu. Osiągnięta dokładność wynosi 92,22\%. 
 
 \subsection{Symulacja}
 Kolejne testy przeprowadzono po konwersji modelu sieci do kodu \CPP{}
@@ -738,6 +748,9 @@ Możliwym rozwiązaniem tych problemów mogłoby być zastosowanie sieci
 splotowej (konwolucyjnej), na przykład \mbox{LeNet-5}, która nie tylko
 osiąga zdecydowanie wyższy wynik w trakcie ewaluacji ale również lepiej
 radzi sobie z generalizowaniem kształtów znajdujących się na obrazie.
+W przeprowadzonym teście architektury \mbox{LeNet-5} osiągnięto wynik
+99,18\% dobrze rozpoznanych cyfr, jednak z~wcześniej
+wspomnianych powodów nie wykorzystano takiej architektury.
 
 
 \newpage
