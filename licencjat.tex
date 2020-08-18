@@ -15,6 +15,7 @@
 \usepackage[tablename=Tabela,margin=0.03\linewidth]{caption}
 \usepackage[]{enumitem}
 \usepackage{indentfirst}
+\usepackage{textcomp}
 
 \usepackage[hidelinks]{hyperref}
 \hypersetup{
@@ -202,8 +203,7 @@ Field-Programmable Gate Array (FPGA) to układy scalone, które mogą być
 elektronicznie przeprogramowane bez potrzeby demontażu samego układu
 z urządzenia. W~porównaniu do układów ASIC znacznie taniej zaprojektować
 pierwszy działający układ. Elastyczna natura układów FPGA wiąże się z~większym
-zużyciem powierzchni krzemu, opóźnień oraz zużycia energii.
-\todo{Dodać przypis 1.} (FPGA architecture: survey and challenges)
+zużyciem powierzchni krzemu, opóźnień oraz zużycia energii.\cite{kuon08}
 
 Podstawowa struktura układów FPGA składa się z~różnych bloków logicznych,
 które mogą być łączone ze sobą w~zależności od wymagań projektowych.
@@ -308,7 +308,8 @@ Na jednym układzie znajduje się czterordzeniowy procesor
 ARM \mbox{Cortex-A53},
 dwurdzeniowy procesor ARM \mbox{Cortex-R5},
 układ graficzny \mbox{Mali-400} oraz zasoby FPGA.
-Całość projektu została oparta o~platformę \todo{Przypis 2.}Xilinx reVISION. Przetwarzane
+Całość projektu została oparta o~platformę Xilinx reVISION\cite{revision}.
+Przetwarzane
 dane dostarczane są z~kamery USB, która była dołączona w~zestawie z~płytą Zynq.
 Urządzeniem końcowym jest telewizor połączony przewodem HDMI z~płytą.
 
@@ -317,7 +318,7 @@ Architektura sieci została dobrana uwzględniając dostępne zasoby programowal
 logiki na płycie, a~także możliwości sprzętu na którym dokonywana była jej
 synteza. Dla problemu klasyfikowania obrazów dobrze nadają się sieci
 splotowe (konwolucyjne, ang.\ convolutional neural networks --- CNN), 
-\todo{przypis 3} których przykładem jest popularna sieć \mbox{LeNet-5}.
+których przykładem jest popularna sieć \mbox{LeNet-5}.\cite{lecun98}
 Architektura ta zawiera zarówno w~pełni połączone warstwy
 oraz warstwy splotowe i~łączące.
 Niestety z~powodu ograniczeń sprzętowych w~pracy nie została użyta ta
@@ -337,7 +338,7 @@ z 10 neuronów z~funkcją aktywacji softmax.
 
 Do stworzenia sieci wykorzystano
 bibliotekę TensorFlow. Sieć uczona była na danych
-z \todo{przypis 4}bazy MNIST składającej się łącznie z~70000 przykładów
+z bazy MNIST\cite{mnist} składającej się łącznie z~70000 przykładów
 cyfr na obrazach o~wielkości 28\(\times \)28 pikseli, z~których każdy
 przedstawiony jest jako wartość od 0 (kolor czarny) do 255 (kolor biały).
 Próbki zostały
@@ -435,8 +436,7 @@ Obydwa korzystają biblioteki Xilinx \lstinline{video_lib}
 Pierwszy z~nich ułatwia odczytywanie danych ze źródeł, dla których potrzebne
 byłyby dodatkowe działania. Są to między innymi kamera USB (użyta w~projekcie),
 HDMI, MIPI CSI (sprzętowy interfejs do transmisji obrazów i~wideo).
-\todo{Przypis UG1221, s.32}
-Sam element zbudowany jest w~oparciu o~element v4l2src, dostępny
+Sam element zbudowany jest w~oparciu o~element v4l2src\cite[s.33]{ug1221}, dostępny
 w standardowej instalacji GStreamera.
 Xlnxvideosink również jest oparty o~inny element --- kmssink.
 Zapewnia odpowiednią konfigurację połączenia z~wyświetlaczami
@@ -873,5 +873,40 @@ wykadrowania reszty. Na te wszystkie poprawy zabrakło czasu, możliwości
 sprzętowych lub wiedzy dotyczącej platformy reVISION.
 
 \restoregeometry{}
+
+\begin{thebibliography}{9}
+  \raggedright
+
+  \bibitem{kuon08}
+    I. Kuon, R. Tessier i J. Rose,
+    \emph{FPGA Architecture: Survey and Challenges, Foundations
+    and Trends\textregistered{} in Electronics Design Automation}.
+    Tom 2,
+    2007
+
+  \bibitem{revision}
+    Xilinx,
+    platforma reVISION w repozytorium GitHub \linebreak
+    \url{https://github.com/Xilinx/Embedded-Reference-Platforms-User-Guide/blob/2018.3/README.md}
+    (dostęp 18.08.2020)
+    
+  \bibitem{lecun98}
+  Y. LeCun, L. Bottou, Y. Bengio, P. Haffner,
+  \emph{Gradient-Based Learning Applied to Document Recognition}.
+  1998
+
+  \bibitem{mnist}
+  Y. LeCun, C. Cortes, C. Burges,
+  Baza danych MNIST
+  \url{http://yann.lecun.com/exdb/mnist/}
+  (dostęp 18.08.2020)
+
+  \bibitem{ug1221}
+  Xilinx,
+  \emph{Zynq UltraScale+ MPSoC Base Targeted Reference Design, User Guide}.
+  UG1221 (v2018.3),
+  2018
+  
+\end{thebibliography}
 
 \end{document}
