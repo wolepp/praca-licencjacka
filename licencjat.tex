@@ -203,7 +203,7 @@ elektronicznie przeprogramowane bez potrzeby demontażu samego układu
 z urządzenia. W~porównaniu do układów ASIC znacznie taniej zaprojektować
 pierwszy działający układ. Elastyczna natura układów FPGA wiąże się z~większym
 zużyciem powierzchni krzemu, opóźnień oraz zużycia energii.
-\todo{Dodać przypis} (FPGA architecture: survey and challenges)
+\todo{Dodać przypis 1.} (FPGA architecture: survey and challenges)
 
 Podstawowa struktura układów FPGA składa się z~różnych bloków logicznych,
 które mogą być łączone ze sobą w~zależności od wymagań projektowych.
@@ -308,7 +308,7 @@ Na jednym układzie znajduje się czterordzeniowy procesor
 ARM \mbox{Cortex-A53},
 dwurdzeniowy procesor ARM \mbox{Cortex-R5},
 układ graficzny \mbox{Mali-400} oraz zasoby FPGA.
-Całość projektu została oparta o~platformę Xilinx reVISION. Przetwarzane
+Całość projektu została oparta o~platformę \todo{Przypis 2.}Xilinx reVISION. Przetwarzane
 dane dostarczane są z~kamery USB, która była dołączona w~zestawie z~płytą Zynq.
 Urządzeniem końcowym jest telewizor połączony przewodem HDMI z~płytą.
 
@@ -317,7 +317,7 @@ Architektura sieci została dobrana uwzględniając dostępne zasoby programowal
 logiki na płycie, a~także możliwości sprzętu na którym dokonywana była jej
 synteza. Dla problemu klasyfikowania obrazów dobrze nadają się sieci
 splotowe (konwolucyjne, ang.\ convolutional neural networks --- CNN), 
-\todo{przypis} których przykładem jest popularna sieć \mbox{LeNet-5}.
+\todo{przypis 3} których przykładem jest popularna sieć \mbox{LeNet-5}.
 Architektura ta zawiera zarówno w~pełni połączone warstwy
 oraz warstwy splotowe i~łączące.
 Niestety z~powodu ograniczeń sprzętowych w~pracy nie została użyta ta
@@ -337,7 +337,7 @@ z 10 neuronów z~funkcją aktywacji softmax.
 
 Do stworzenia sieci wykorzystano
 bibliotekę TensorFlow. Sieć uczona była na danych
-z \todo{przypis}bazy MNIST składającej się łącznie z~70000 przykładów
+z \todo{przypis 4}bazy MNIST składającej się łącznie z~70000 przykładów
 cyfr na obrazach o~wielkości 28\(\times \)28 pikseli, z~których każdy
 przedstawiony jest jako wartość od 0 (kolor czarny) do 255 (kolor biały).
 Próbki zostały
