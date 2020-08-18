@@ -158,22 +158,22 @@ o~nadanie tytułu zawodowego.
 \newpage
 \section*{Wstęp}
 \addcontentsline{toc}{section}{Wstęp}%
-Wraz z intensywnym w ostatnich latach rozwojem dziedziny nauczania maszynowego,
+Wraz z~intensywnym w~ostatnich latach rozwojem dziedziny nauczania maszynowego,
 w~przemyśle komputerowym na dobre zagościło rozpoznawanie obrazów. Stało
 się to możliwe dzięki nieustającemu postępowi technologicznemu oraz
 dostępowi do coraz większej ilości zasobów komputerowych. Nowe architektury
 sieci neuronowych rosną do niewyobrażalnych kilkadziesiąt lat temu rozmiarów.
 Przy ciągle rosnącej ilości danych potrzebnych do przetworzenia w~czasie
 rzeczywistym konieczne jest zastosowanie specjalistycznego sprzętu.
-Potencjał drzemiący w układach FPGA, w postaci
-ogromnego zrównoleglenia obliczeń, którego nie są w stanie zaoferować układy CPU,
+Potencjał drzemiący w~układach FPGA, w~postaci
+ogromnego zrównoleglenia obliczeń, którego nie są w~stanie zaoferować układy CPU,
 elastyczności, której nie dają układy ASIC oraz
-niskich opóźnień, których nie da się osiągnąć wykorzystując układy GPU,
-można wykorzystać budując model sieci przeznaczony na taki układ.
+niskich opóźnień, których nie da się osiągnąć programując układy GPU,
+można wykorzystać budując odpowiednio przygotowany model sieci.
 
 W niniejszej pracy zaimplementowano na FPGA model sieci neuronowej rozpoznającej
 cyfry. Przygotowano również część odpowiedzialną za wstępne przygotowanie
-obrazu z kamery i wyświetlającej go na monitorze, oraz tej przedstawiającej
+obrazu z~kamery i~wyświetlającej go na monitorze, oraz tej przedstawiającej
 wyniki na terminalu komputera.
 
 Praca składa się ze wstępu, trzech rozdziałów podsumowania oraz bibliografii.
@@ -185,14 +185,14 @@ do rozległego tematu sieci neuronowych.
 
 Rozdział drugi to przedstawienie projektu zaczynając od opisu
 sprzętu oraz wykorzystanych narzędzi, następnie wyjaśnione zostają kroki
-czynione w trakcie tworzenia projektu, a kończąc informacji dotyczących
-uruchamiania.
+czynione w~trakcie tworzenia projektu, na koniec przedstawiono informacje
+dotyczące uruchamiania.
 
-Ostatni rozdział zawiera wyniki predykcji sieci wraz z dyskusją co wpływa
-na osiągnięte wyniki oraz jak potencjalnie można osiągnąć ich poprawę.
+Ostatni rozdział zawiera wyniki predykcji sieci wraz z~dyskusją co wpływa
+na te osiągnięte oraz na jakie sposoby można potencjalnie uzyskać ich poprawę.
 
 % Na zakończenie składam serdeczne podziękowania dr. Grzegorzowi Korcylowi
-% za pomoc w nakreśleniu projektu oraz cenne uwagi podczas pisania pracy.
+% za pomoc w~nakreśleniu projektu oraz cenne uwagi podczas pisania pracy.
 \restoregeometry{}
 
 \newpage
@@ -393,7 +393,7 @@ symulacji.
 \begin{figure}[H]
   \centering
   \input{figures/dist_of_weights.pgf}
-  \caption{Rozkład wartości wag modelu}\label{fig:weights_dist}
+  \caption{Rozkład wartości wag użytego modelu}\label{fig:weights_dist}
 \end{figure}
 
 
@@ -410,7 +410,7 @@ symulacji.
 \end{figure}
 Zsyntetyzowana sieć jest częścią projektu. Potrzebne jest również dostarczenie
 danych do sieci oraz przedstawienie wyniku.
-Do tego celu skorzystano z~frameworka GStreamer, dzięki której można
+Do tego celu skorzystano z~frameworka GStreamer, dzięki któremu można
 tworzyć grafy z~komponentów (pluginów, elementów)
 przetwarzających media, zarówno audio jak i~video.
 Każdy z~elementów grafu składa się z~co najmniej jednego źródła (source),
@@ -425,9 +425,11 @@ media jest w~stanie przetworzyć dana wtyczka (na przykład format pikseli,
 maksymalny rozmiar obrazu). 
 Łączone ze sobą elementy dokonują negocjacji
 parametrów mediów, takich jak rozdzielczość obrazu, format pikseli,
-ilość klatek na sekundę oraz innych.
+ilość klatek na sekundę oraz innych. Wszystkie wtyczki wypisane niżej
+(poza xlnxvideosink, xlnxvideosrc od Xilinx oraz sdxnet, będącego
+własną implementacją) są dostępne wraz z~instalacją GStreamera.
 
-\subsubsection{xlnxvideosrc i~xlnxvideosink}\label{sec:xlnxvideosrc i xlnxvideosink}
+\subsubsection{xlnxvideosrc i~xlnxvideosink}\label{sec:xlnxvideosrc i~xlnxvideosink}
 Są to pluginy dostarczone przez firmę Xilinx wraz z~platformą reVISION.
 Obydwa korzystają biblioteki Xilinx \lstinline{video_lib}
 Pierwszy z~nich ułatwia odczytywanie danych ze źródeł, dla których potrzebne
@@ -496,7 +498,7 @@ MNIST tak, aby cyfry były koloru czarnego, tło białego. Zakres wartości
 wynosi od 0 do 255.
 
 \subsubsection{Funkcja}\label{section:funkcja}
-Cała sieć jest przedstawiona jako jedna funkcja o nazwie \lstinline{nn}.
+Cała sieć jest przedstawiona jako jedna funkcja o~nazwie \lstinline{nn}.
 Parametrami tej funkcji są dwie tablice:
 \lstinline[style=hls]{input[]}, do której są zapisywane są
 dane do przetworzenia,
@@ -562,9 +564,10 @@ IDE do pisania aplikacji lub bibliotek uruchamianych na platformach
 Xilinx MPSoC).
 
 Wywołując narzędzie \lstinline{sdx_pack} należy podać plik nagłówkowy funkcji,
-docelową nazwę biblioteki, mapowanie parametrów funkcji na porty modułu,
+docelową nazwę biblioteki,
 ścieżkę do pliku \lstinline{component.xml} wygenerowanego podczas eksportu
-do paczki IP, protokół kontroli modułu, odpowiedni zegar, i~informacje
+do paczki IP, mapowanie parametrów funkcji na porty modułu,
+protokół kontroli modułu, odpowiedni zegar, i~informacje
 dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
 
 \hspace{1mm}
@@ -592,65 +595,77 @@ dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
   {figures/kod-scheme.pdf}
   \caption{Schemat przetwarzania danych}\label{fig:code-scheme}
 \end{figure}
-Dalsza część implementacji składa się z dwóch części.
-Pierwsza z nich to \lstinline{neuralnet}, biblioteka statyczna, która
-odpowiada za inicjalizację i zwolnienie pamięci dla danych, z których
+Dalsza część implementacji składa się z~dwóch części.
+Pierwsza z~nich to \lstinline{neuralnet}, biblioteka statyczna, która
+odpowiada za inicjalizację i~zwolnienie pamięci dla danych, z~których
 korzystają funkcje akcelerowane sprzętowo,
-wyciągnięcie danych dotyczących luminacji z obrazu,
+wyciągnięcie danych dotyczących luminacji z~obrazu,
 wywołanie funkcji \lstinline{nn} (patrz rozdział~\ref{section:funkcja}) oraz
-za utworzenie obrazu wychodzącego z pluginu.
+za utworzenie obrazu wychodzącego z~pluginu.
 Druga część to biblioteka dzielona \lstinline{gstsdxnet}, korzystająca
-z funkcji z biblioteki \lstinline{neuralnet}. Biblioteka ta jest rozpoznawana
-jako plugin GStreamer, można więc z niej korzystać przy budowaniu
+z~funkcji z~biblioteki \lstinline{neuralnet}. Biblioteka ta jest rozpoznawana
+jako plugin GStreamer, można więc z~niej korzystać przy budowaniu
 grafów za pomocą GStreamera. Schemat wykonywania kodu przedstawiony jest
 na rysunku~\ref{fig:code-scheme} na stronie~\pageref{fig:code-scheme}.
 
 \subsubsection{neuralnet}\label{sec:neuralnet}
-Dane obrazu (kanał luminacji i kanał chrominacji)
+Dane obrazu (kanał luminacji i~kanał chrominacji)
 przechowywane są w~obiektach klasy \lstinline{xf::Mat} będącej
 częścią bibliotek xfOpenCV. Określona jest wysokość oraz szerokość obrazu,
 typ pikseli kodujących obraz (w~tym przypadku ośmiobitowe bez znaku
 z~jednym kanałem pikseli). Pamięć dla tych obiektów oraz dla tablicy
 przechowującej predykcje sieci alokowana jest przez
-funkcję \lstinline{net_init_sds}, a zwalniana przez funkcję
-\lstinline{net_deinit_sds}. Dla każdej klatki obrazu z poziomu
+funkcję \lstinline{net_init_sds}, a~zwalniana przez funkcję
+\lstinline{net_deinit_sds}. Dla każdej klatki obrazu z~poziomu
 \lstinline{gstsdxnet} wywoływane są kolejno trzy funkcje:
 \lstinline{net_sds_read},
 \lstinline{net_sds_predict} oraz
 \lstinline{net_sds_write}.
 
-Pierwsza z nich rozkodowuje przy pomocy masek i przesunięć bitowych
-dane z pikseli i zapisuje je do dwóch kanałów (obiektów \lstinline{xf::Mat}).
+Pierwsza z~nich rozkodowuje przy pomocy masek i~przesunięć bitowych
+dane z~pikseli i~zapisuje je do dwóch kanałów (obiektów \lstinline{xf::Mat}).
 Ostatnia, również używając tych samych bitowych operacji, łączy obydwa kanały
 tworząc wyjściowy obraz, przy czym dla kanału luminacji są to dokładnie te
-same dane, natomiast wszystkie bajty kanału chrominacji mają wartość 128,
-aby wyjściowy obraz był w skali szarości (aby obraz na monitorze był bardziej
-zbliżony do tego rzeczywiście przetwarzanego).
-Obydwie funkcje korzystają z funkcji akcelerowanych
-sprzętowo aby zrównoleglić i przyspieszyć w ten sposób proces.
+same dane, które zostały odczytane przez \lstinline{net_sds_read},
+natomiast wszystkie bajty kanału chrominacji mają wartość 128,
+aby wyjściowy obraz był w~skali szarości (dzięki czemu
+obraz na monitorze jest bardziej zbliżony do tego rzeczywiście przetwarzanego).
+Obydwie funkcje korzystają z~funkcji akcelerowanych
+sprzętowo aby zrównoleglić i przyspieszyć w~ten sposób proces.
 Funkcja \lstinline{net_sds_predict} wywołuje funkcję \lstinline{nn} oraz
-kopiuje otrzymane predykcje do tablicy otrzymanej z \lstinline{gstsdxnet}.
+kopiuje otrzymane predykcje do tablicy otrzymanej z~\lstinline{gstsdxnet}.
 
 Przy kompilacji biblioteki należy dołączyć bibliotekę statyczną
-powstałą w procesie opisanym w rozdziale~\ref{section:create_library}.
+powstałą w~procesie opisanym w~rozdziale~\ref{section:create_library}.
 
 \subsubsection{gstsdxnet}\label{sec:gstsdxnet}
-Framework GStreamer jest w stanie rozpoznać bibliotekę \lstinline{gstsdxnet}
+Framework GStreamer jest w~stanie rozpoznać bibliotekę \lstinline{gstsdxnet}
 dzięki napisaniu funkcji spełniających wymagania stawiane przez framework.
 Obejmują one inicjalizację pluginu (m.in.~alokacja pamięci, zdefiniowanie
-możliwych parametrów mediów na wejściu i na wyjściu, zapisanie
+możliwych parametrów mediów na wejściu i~na wyjściu, zapisanie
 metadanych), funkcję
 przetwarzającą klatki obrazu oraz te odpowiadające za prawidłowe zakończenie
 pracy wtyczki. Funkcja inicjalizująca plugin uruchamia też funkcję
-inicjalizującą z biblioteki \lstinline{neuralnet}.
+inicjalizującą z~biblioteki \lstinline{neuralnet}.
 Funkcja przetwarzająca obraz (\lstinline{gst_sdx_process_frames}
 przygotowuje dane, które przekazuje do
-odpowiednich funkcji z \lstinline{neuralnet}. Dla co dwudziestej piątej
+odpowiednich funkcji z~\lstinline{neuralnet}. Dla co dwudziestej piątej
 klatki obrazu na standardowe wyjście zapisywany jest wynik predykcji
 w postaci pary liczb (przewidywana cyfra, prawdopodobieństwo). 
 
-Kod wtyczki oparto o kod przykładowej wtyczki dostarczonej wraz
+Kod wtyczki oparto o~kod przykładowej wtyczki dostarczonej wraz
 z platformą reVISION \mbox{2018-3} przez Xilinx.
+
+\newpage
+\subsection{Uruchamianie}\label{sec:Uruchamianie}
+Aby uruchomić pipeline przedstawiony na rysunku~\ref{fig:pipeline}
+można skorzystać z~narzędzia \lstinline{gst-launch-1.0}.
+Narzędzie ułatwia i~przyspiesza uruchamianie różnych strumieni
+przetwarzających media, ponieważ nie ma potrzeby zaprogramowania
+aplikacji. Narzędzie jako argumenty wywołania programu pobiera
+nazwy pluginów oddzielone znakiem wykrzyknika
+w~kolejności w~jakiej mają wystąpić w~grafie. Skrypt przedstawiono
+na listingu~\ref{lst:script} na stronie~\pageref{lst:script}.
 
 \begin{figure}[h]
   \centering
@@ -661,17 +676,7 @@ z platformą reVISION \mbox{2018-3} przez Xilinx.
   następuje wymiana danych, na czerwono kontrolę procesora}\label{fig:physical-scheme}
 \end{figure}
 
-
-\subsection{Uruchamianie}\label{sec:Uruchamianie}
-Aby uruchomić pipeline przedstawiony na rysunku~\ref{fig:pipeline}
-można skorzystać z narzędzia \lstinline{gst-launch-1.0}.
-Narzędzie ułatwia i przyspiesza uruchamianie różnych strumieni
-przetwarzających media, ponieważ nie ma potrzeby zaprogramowania
-aplikacji. Narzędzie jako argumenty wywołania programu pobiera
-nazwy pluginów oddzielone znakiem wykrzyknika
-w~kolejności w~jakiej mają wystąpić w~grafie. Skrypt przedstawiono
-na listingu~\ref{lst:script} na stronie~\pageref{lst:script}.
-
+\newpage
 % \hspace{1cm}
 \begin{minipage}{\linewidth}
 \lstinputlisting[
@@ -683,27 +688,27 @@ na listingu~\ref{lst:script} na stronie~\pageref{lst:script}.
 
 
 \newpage
-\section{Wyniki i~dyskusja}\label{sec:Wyniki i dyskusja}
+\section{Wyniki i~dyskusja}\label{sec:Wyniki i~dyskusja}
 W~tym rozdziale przedstawione są wyniki prezentujące dokładność
 predykcji dokonywanych przez model na różnych etapach implementacji
-projektu zaczynając od testach w Pythonie, a~kończąc na sprawdzeniu
+projektu zaczynając od testach w~Pythonie, a~kończąc na sprawdzeniu
 działania w~pełni zaimplementowanego projektu.
 
 \subsection{Ewaulacja modelu}\label{sec:Ewaulacja modelu}
-Do testów w Pythonie użyto 10000 próbek z~bazy MNIST, którymi nie
+Do testów w~Pythonie użyto 10000 próbek z~bazy MNIST, którymi nie
 wytrenowano modelu. Osiągnięta dokładność wynosi 92,22\%. 
 
 \subsection{Symulacja}\label{sec:Symulacja}
 Kolejne testy przeprowadzono po konwersji modelu sieci do kodu \CPP{}
-przez hls4ml. Danymi testowymi były te same próbki z bazy MNIST.
+przez hls4ml. Danymi testowymi były te same próbki z~bazy MNIST.
 Liczba dobrze sklasyfikowanych cyfr spadła --- osiągnięto 90,52\%
 dokładności.
 
 \subsection{Dane rzeczywiste}\label{sec:Dane rzeczywiste}
 Kompletny projekt przetestowano na zbiorze liczącym 20 cyfr (patrz
 rys.~\ref{fig:test_data}). Cyfry
-zapisano odręcznie czarnym markerem na białym papierze. Dla każdej z nich
-dokonano pomiarów, a uzyskane wyniki zapisano w~tabeli~\ref{tab:results}.
+zapisano odręcznie czarnym markerem na białym papierze. Dla każdej z~nich
+dokonano pomiarów, a~uzyskane wyniki zapisano w~tabeli~\ref{tab:results}.
 
 \begin{figure}[h]
   \centering
@@ -712,19 +717,19 @@ dokonano pomiarów, a uzyskane wyniki zapisano w~tabeli~\ref{tab:results}.
 \end{figure}
 
 
-\subsubsection{Tabela z wynikami}\label{sec:Tabela z wynikami}
-Dla każdej z cyfr wykonano kilkadziesiąt odczytów. W tabeli~\ref{tab:results}
-podane są najistotniejsze z nich.
-Pierwsza kolumna oznacza rzeczywistą cyfrę. W kolumnach „zestaw A” i „zestaw B”
-podane wyniki dla cyfr z zestawów przedstawionych
+\subsubsection{Tabela z~wynikami}\label{sec:Tabela z~wynikami}
+Dla każdej z~cyfr wykonano kilkadziesiąt odczytów. W~tabeli~\ref{tab:results}
+podane są najistotniejsze z~nich.
+Pierwsza kolumna oznacza rzeczywistą cyfrę. W~kolumnach „zestaw A” i~„zestaw B”
+podane wyniki dla cyfr z~zestawów przedstawionych
 na rysunku~\ref{fig:test_data}.
 Każda komórka zawiera maksymalną odczytaną wartość prawdopodobieństwa
 przynależności do danej klasy (lub „nie rozpoznano” jeśli sieć ani razu
 nie rozpoznała poprawnie cyfry)
-oraz wszystkie wystąpienia błędnych predykcji wraz z odpowiadającym im
+oraz wszystkie wystąpienia błędnych predykcji wraz z~odpowiadającym im
 największymi odczytami prawdopodobieństwa (o ile takie wystąpiły).
-Ze względu na użyty typ danych w ostatniej warstwie sieci
-wyniki otrzymano z dokładnością do 6,25 punkta procentowego.
+Ze względu na użyty typ danych w~ostatniej warstwie sieci
+wyniki otrzymano z~dokładnością do 6,25 punkta procentowego.
 
 \begin{table}[h]
 \centering
@@ -773,41 +778,41 @@ wyniki otrzymano z dokładnością do 6,25 punkta procentowego.
     \\ 
   \bottomrule
 \end{tabular}
-  \caption{Wyniki dla danych rzeczywistych z kamery}\label{tab:results}
+  \caption{Wyniki dla danych rzeczywistych z~kamery}\label{tab:results}
 \end{table}
 
 \subsubsection{Omówienie wyników}\label{sec:omowienie_wynikow}
-Dla 14 spośród 20 cyfr otrzymano wyniki z prawdopodobieństwem wynoszącym
+Dla 14 spośród 20 cyfr otrzymano wyniki z~prawdopodobieństwem wynoszącym
 co najmniej 87,5\%. Dla cyfr „2” i~„3” uzyskano wiele odczytów
 ze stuprocentowym prawdopodobieństwem dla obydwu zestawów. Cyfry „0”, „6” i~„8”
 również były w~większości odczytów poprawnie kwalifikowane. Małe problemy
-nastąpiły przy próbach odczytu cyfr „1”, „4” i~„7”, w których sieć nie była
+nastąpiły przy próbach odczytu cyfr „1”, „4” i~„7”, w~których sieć nie była
 w stanie poprawnie określić klasy, natomiast poprawnie odczytywała tę cyfrę
-z drugiego zestawu. Jedynie cyfra „9” nie została w żadnym z~przypadków
+z drugiego zestawu. Jedynie cyfra „9” nie została w~żadnym z~przypadków
 rozpoznana, ponadto błędnie odczytywana jako cyfra „3” z~obu zestawów.
 
-Każda próba pomiaru cyfry dawała wiele wyników w zależności od położenia
+Każda próba pomiaru cyfry dawała wiele wyników w~zależności od położenia
 cyfry na obrazie, jej grubości, kąta pod jakim jest nagrywana. Pomiary starano
 robić się tak, aby środek cyfry pokrywał się ze środkiem obrazu, a~także
 żeby cyfra nie stykała się z~jego krawędzią. Dla wszystkich próbek sprawdzano
 różne odległości, przesunięcia cyfry względem środka obrazu i~kąty.
 Zauważono, że przy kilku próbkach, szczególnie dla cyfry „5”,
 najmniejsze poruszenie kamery
-wynikające z niestabilności ręki wpływało w znacznym stopniu na predykcję.
+wynikające z~niestabilności ręki wpływało w~znacznym stopniu na predykcję.
 
 \subsection{Dyskusja}\label{sec:Dyskusja}
-Na każdym z etapów implementacji można zauważyć spadek dokładności sieci.
+Na każdym z~etapów implementacji można zauważyć spadek dokładności sieci.
 Po przetłumaczeniu modelu sieci przez hls4ml jest to głównie spowodowane
 zmniejszeniem precyzji danych na jakich sieć dokonuje obliczeń. 
-Na ostatnim etapie spadek związany jest z możliwymi szumami obrazu,
+Na ostatnim etapie spadek związany jest z~możliwymi szumami obrazu,
 niewystarczająco dobrym nakierowaniu kamery na cyfrę, złym oświetleniu lub
 innymi zewnętrznymi przyczynami. Sieć o~tej stosunkowo małej architekturze
 może mieć problem z~rozpoznawaniem cyfr o~takim kształcie i~położeniu
-na obrazie, z którym nie miała do czynienia w trakcie trenowania.
+na obrazie, z~którym nie miała do czynienia w~trakcie trenowania.
 Możliwym rozwiązaniem tych problemów mogłoby być zastosowanie sieci
 splotowej (konwolucyjnej), na przykład \mbox{LeNet-5}, która nie tylko
-osiąga zdecydowanie wyższy wynik w trakcie ewaluacji ale również lepiej
-radzi sobie z generalizowaniem kształtów znajdujących się na obrazie.
+osiąga zdecydowanie wyższy wynik w~trakcie ewaluacji ale również lepiej
+radzi sobie z~generalizowaniem kształtów znajdujących się na obrazie.
 W przeprowadzonym teście architektury \mbox{LeNet-5} osiągnięto wynik
 99,18\% dobrze rozpoznanych cyfr, jednak z~wcześniej
 wspomnianych powodów nie wykorzystano takiej architektury.
@@ -818,41 +823,41 @@ wspomnianych powodów nie wykorzystano takiej architektury.
 \section*{Podsumowanie}
 \addcontentsline{toc}{section}{Podsumowanie}%
 Celem pracy był projekt, który pozwala na
-rozpoznawanie cyfr w czasie rzeczywistym, korzystając z modelu sieci
+rozpoznawanie cyfr w~czasie rzeczywistym, korzystając z~modelu sieci
 neuronowej zaimplementowanej na układzie FPGA. Całość można określić jako
 GStreamer pipeline, spośród którego elementów można wyróżnić wtyczkę
-do rozpoznawania cyfr, korzystającą z sieci neuronowej, wtyczki odpowiadające
+do rozpoznawania cyfr, korzystającą z~sieci neuronowej, wtyczki odpowiadające
 za wstępne przetworzenie obrazu oraz te, które umożliwiają wyświetlenie obrazu
 na urządzeniu zewnętrznym.
 
 W rozdziale~\ref{sec:Teoria} została przedstawiona teoria przydatna
 do zrozumienia projektu. Opisana została architektura FPGA
 w~rozdziale~\ref{sec:Architektura FPGA}, informacje o~przetwarzaniu
-obrazu (\ref{sec:Przetwarzanie obrazu}) w tym opis użytego formatu pikseli
+obrazu (\ref{sec:Przetwarzanie obrazu}) w~tym opis użytego formatu pikseli
 oraz krótki opis jak działają sieci neuronowe (\ref{sec:Sieci neuronowe}).
 
 Przedstawiono również sam projekt zaczynając od ogólnego
-zarysu (\ref{sec:Zarys projektu}), pokazania platformy z której korzystano
-(\ref{sec:Platforma}) i prezentacji architektury sieci (\ref{sec:Siec neuronowa}).
+zarysu (\ref{sec:Zarys projektu}), pokazania platformy z~której korzystano
+(\ref{sec:Platforma}) i~prezentacji architektury sieci (\ref{sec:Siec neuronowa}).
 Następnie przybliżono frameworki hls4ml (\ref{sec:hls4ml})
-i GStreamer (\ref{sec:GStreamer}). Został opisany i przedstawiony
+i GStreamer (\ref{sec:GStreamer}). Został opisany i~przedstawiony
 również sam GStreamer pipeline
-w~rozdziałach~\ref{sec:xlnxvideosrc i xlnxvideosink}--\ref{sec:fpsdisplaysink}.
+w~rozdziałach~\ref{sec:xlnxvideosrc i~xlnxvideosink}--\ref{sec:fpsdisplaysink}.
 
 Przybliżony został proces implementacji modelu sieci na FPGA
 w~rozdziale~\ref{sec:Uzywanie sieci}, gdzie opisano jak dostosować kod będący
-wynikiem działania hls4ml do poprawnego działania z resztą projektu
-oraz w jaki sposób utworzyć z niej bibliotekę dzieloną, z której można
-korzystać w projektach SDSoC.
+wynikiem działania hls4ml do poprawnego działania z~resztą projektu
+oraz w~jaki sposób utworzyć z~niej bibliotekę dzieloną, z~której można
+korzystać w~projektach SDSoC.
 
 Ostatnie podrozdziały rozdziału~\ref{sec:Opis projektu} dotyczą
-wykorzystania utworzonej biblioteki dzielonej w implementacji wtyczki
+wykorzystania utworzonej biblioteki dzielonej w~implementacji wtyczki
 GStreamer. Proces tworzenia został podzielony na dwie części (neuralnet,
-patrz~\ref{sec:neuralnet} i gstsdxnet --- \ref{sec:gstsdxnet}), aby
+patrz~\ref{sec:neuralnet} i~gstsdxnet --- \ref{sec:gstsdxnet}), aby
 w~logiczny sposób oddzielić od siebie potrzebne funkcjonalności.
 
 Na samym końcu zaprezentowano otrzymane wyniki na różnych etapach
-implementacji sieci neuronowej: jako model w Pythonie, w trakcie symulacji
+implementacji sieci neuronowej: jako model w~Pythonie, w~trakcie symulacji
 komputerowej przed syntezą oraz po pełnej implementacji, wykorzystując
 własne dane testowe (patrz rys.~\ref{fig:test_data}).
 
@@ -860,7 +865,7 @@ W implementacji projektu jest wiele rzeczy, które można poprawić lub
 w jakiś sposób ulepszyć. Wśród nich jest wykorzystanie innej architektury
 sieci, aby otrzymać większą skuteczność rozpoznawania cyfr, przeniesienie
 części odpowiedzialnej za wstępne przetworzenie obrazu do funkcji
-akcelerowanych sprzętowo w celu poprawienia wydajności, inny sposób
+akcelerowanych sprzętowo w~celu poprawienia wydajności, inny sposób
 prezentacji wyniku, na przykład na wyświetlanym obrazie, kończąc
 na samym sposobie informowania użytkownika jaka część obrazu będzie
 klasyfikowana przez sieć --- wizualne oznaczenie fragmentu obrazu, zamiast
