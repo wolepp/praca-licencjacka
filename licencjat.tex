@@ -12,7 +12,7 @@
 \usepackage[]{graphics}
 \usepackage[]{svg}
 \usepackage{booktabs}
-\usepackage[tablename=Tabela,margin=0.05\linewidth]{caption}
+\usepackage[tablename=Tabela,margin=0.03\linewidth]{caption}
 \usepackage[]{enumitem}
 
 \usepackage[hidelinks]{hyperref}
@@ -64,7 +64,8 @@
     \begin{center}
 
       \Large
-	    \textbf{Uniwersytet Jagielloński w~Krakowie}\vspace{0.2cm}\\ Wydział Fizyki, Astronomii i~Informatyki Stosowanej
+      \textbf{Uniwersytet Jagielloński w~Krakowie}\vspace{0.2cm}\\
+        Wydział Fizyki, Astronomii i~Informatyki Stosowanej
       \vspace*{1cm}
                
       \vspace{3cm}
@@ -73,7 +74,8 @@
       \normalsize Nr albumu: 1146600\\
       \vspace{2cm}
       \Huge
-      \textbf{Rozpoznawanie cyfr przez sieć neuronową zaimplementowaną na układzie FPGA}
+      \textbf{Rozpoznawanie cyfr przez sieć neuronową
+      zaimplementowaną na układzie FPGA}
       
       \vspace{1.5cm}
       \normalsize
@@ -104,9 +106,13 @@ z Zakładu Technologii Informatycznych
 \large \textbf{Oświadczenie autora pracy}\vspace{0.6cm}\\
 \end{flushleft}
 
-\noindent Świadom odpowiedzialności prawnej oświadczam, że niniejsza praca dyplomowa została napisana przeze mnie samodzielnie i~nie zawiera treści uzyskanych w~sposób niezgodny z~obowiązującymi przepisami.\\
+\noindent Świadom odpowiedzialności prawnej oświadczam, że niniejsza praca
+dyplomowa została napisana przeze mnie samodzielnie i~nie zawiera treści
+uzyskanych w~sposób niezgodny z~obowiązującymi przepisami.\\
 
-\noindent Oświadczam również, że przedstawiona praca nie była wcześniej przedmiotem procedur związanych z~uzyskaniem tytułu zawodowego w~wyższej uczelni.
+\noindent Oświadczam również, że przedstawiona praca nie była wcześniej
+przedmiotem procedur związanych z~uzyskaniem
+tytułu zawodowego w~wyższej uczelni.
 \vspace{2cm}
 \begin{center}
 \begin{tabular}{lr}
@@ -120,7 +126,9 @@ z Zakładu Technologii Informatycznych
 \large \textbf{Oświadczenie kierującego pracą}
 \end{flushleft}
 
-\noindent Potwierdzam, że niniejsza praca została przygotowana pod moim kierunkiem i~kwalifikuje się do przedstawienia jej w~postępowaniu o~nadanie tytułu zawodowego.
+\noindent Potwierdzam, że niniejsza praca została przygotowana pod moim
+kierunkiem i~kwalifikuje się do przedstawienia jej w~postępowaniu
+o~nadanie tytułu zawodowego.
 \vspace{2cm}
 \begin{center}
 \begin{tabular}{lr}
@@ -136,14 +144,47 @@ z Zakładu Technologii Informatycznych
 
 \newpage
 \section{Wstęp}
-Tutaj wstęp
+Wraz z intensywnym w ostatnich latach rozwojem dziedziny nauczania maszynowego,
+w~przemyśle komputerowym na dobre zagościło rozpoznawanie obrazów. Stało
+się to możliwe dzięki nieustającemu postępowi technologicznemu oraz
+dostępowi do coraz większej ilości zasobów komputerowych. Nowe architektury
+sieci neuronowych rosną do niewyobrażalnych kilkadziesiąt lat temu rozmiarów.
+Przy ciągle rosnącej ilości danych potrzebnych do przetworzenia w~czasie
+rzeczywistym konieczne jest zastosowanie specjalistycznego sprzętu.
+Potencjał drzemiący w układach FPGA, w postaci
+ogromnego zrównoleglenia obliczeń, którego nie są w stanie zaoferować układy CPU,
+elastyczności, której nie dają układy ASIC oraz
+niskich opóźnień, których nie da się osiągnąć wykorzystując układy GPU,
+można wykorzystać budując model sieci przeznaczony na taki układ.
+
+W niniejszej pracy zaimplementowano na FPGA model sieci neuronowej rozpoznającej
+cyfry. Przygotowano również część odpowiedzialną za wstępne przygotowanie
+obrazu z kamery i wyświetlającej go na monitorze, oraz tej przedstawiającej
+wyniki na terminalu komputera.
+
+Praca składa się ze wstępu, trzech rozdziałów podsumowania oraz bibliografii.
+
+W rozdziale pierwszym przedstawione są zagadnienia teoretyczne dotyczące
+projektu, potrzebne dla zrozumienia reszty pracy. Znajdują się tam opis
+architektury FPGA, problematyka przetwarzania obrazów oraz krótki wstęp
+do rozległego tematu sieci neuronowych.
+
+Rozdział drugi to przedstawienie projektu zaczynając od opisu
+sprzętu oraz wykorzystanych narzędzi, następnie wyjaśnione zostają kroki
+czynione w trakcie tworzenia projektu, a kończąc informacji dotyczących
+uruchamiania.
+
+Ostatni rozdział zawiera wyniki predykcji sieci wraz z dyskusją co wpływa
+na osiągnięte wyniki oraz jak potencjalnie można osiągnąć ich poprawę.
+
+
 
 \newpage
 \section{Teoria}
 \subsection{Architektura FPGA}
 Field-Programmable Gate Array (FPGA) to układy scalone, które mogą być
 elektronicznie przeprogramowane bez potrzeby demontażu samego układu
-z urządzenia. w~porównaniu do układów ASIC znacznie taniej zaprojektować
+z urządzenia. W~porównaniu do układów ASIC znacznie taniej zaprojektować
 pierwszy działający układ. Elastyczna natura układów FPGA wiąże się z~większym
 zużyciem powierzchni krzemu, opóźnień oraz zużycia energii.
 \todo{Dodać przypis} (FPGA architecture: survey and challenges)
@@ -494,21 +535,21 @@ cyfry oraz pozbycia się szumów obrazu i~jasnych cieni.
 \end{itemize}
 \end{minipage}
 
-\newpage
+% \newpage
 \subsubsection{Tworzenie biblioteki}\label{section:create_library}
-\begin{figure}[h]
-  \centering
-  \includesvg[width=0.9\linewidth]{figures/sdx_pack-scheme}
-  \caption{Schemat tworzenia biblioteki \\
-  Za \textit{SDSoC Environment User Guide: C-Callable IP Libraries},
-  \url{https://china.xilinx.com/html_docs/xilinx2018_3/sdsoc_doc/c-callable-libraries-zah1504034388097.html}}\label{fig:ccallable}
-\end{figure}
+
 Zsyntetyzowany moduł sieci został wyeksportowany w~środowisku Vivado HLS
 do paczki IP (Intelectual Property). Następnie poprzez narzędzie
 \lstinline{sdx_pack} utworzono statyczną bibliotekę gotową do wykorzystania
 w innym projekcie w~środowisku SDSoC (Software-Defined System on Chip,
 IDE do pisania aplikacji lub bibliotek uruchamianych na platformach
 Xilinx MPSoC).
+
+Wywołując narzędzie \lstinline{sdx_pack} należy podać plik nagłówkowy funkcji,
+docelową nazwę biblioteki, mapowanie parametrów funkcji na porty modułu,
+ścieżkę do pliku \lstinline{component.xml} wygenerowanego podczas eksportu
+do paczki IP, protokół kontroli modułu, odpowiedni zegar, i~informacje
+dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
 
 \hspace{1mm}
 \begin{minipage}{0.95\linewidth}
@@ -518,12 +559,15 @@ Xilinx MPSoC).
 ]{listings/sdx_pack.sh}
 \end{minipage}
 
-Wywołując narzędzie \lstinline{sdx_pack} należy podać plik nagłówkowy funkcji,
-docelową nazwę biblioteki, mapowanie parametrów funkcji na porty modułu,
-ścieżkę do pliku \lstinline{component.xml} wygenerowanego podczas eksportu
-do paczki IP, protokół kontroli modułu, odpowiedni zegar, i~informacje
-dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
+\begin{figure}[h]
+  \centering
+  \includesvg[width=0.92\linewidth]{figures/sdx_pack-scheme}
+  \caption{Schemat tworzenia biblioteki \\
+  Za \textit{SDSoC Environment User Guide: C-Callable IP Libraries},
+  \url{https://china.xilinx.com/html_docs/xilinx2018_3/sdsoc_doc/c-callable-libraries-zah1504034388097.html}}\label{fig:ccallable}
+\end{figure}
 
+\newpage
 \subsection{Implementacja pluginu sdxnet}
 \begin{figure}
   \centering
