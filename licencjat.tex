@@ -14,6 +14,7 @@
 \usepackage{booktabs}
 \usepackage[tablename=Tabela,margin=0.03\linewidth]{caption}
 \usepackage[]{enumitem}
+\usepackage{indentfirst}
 
 \usepackage[hidelinks]{hyperref}
 \hypersetup{
@@ -54,6 +55,17 @@
   numberstyle=\small,
   xleftmargin=2em,
 }
+
+\newenvironment{changemargin}[2]{%
+\begin{list}{}{%
+\setlength{\topsep}{0pt}%
+\setlength{\topmargin}{#1}%
+% \setlength{\bottommargin}{#2}%
+\setlength{\listparindent}{\parindent}%
+\setlength{\itemindent}{\parindent}%
+\setlength{\parsep}{\parskip}%
+}%
+\item[]}{\end{list}}
 
 \def\CPP{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
 \def\ok{\(\sim \)}
@@ -142,8 +154,10 @@ o~nadanie tytułu zawodowego.
 \newpage
 \tableofcontents
 
+\newgeometry{top=5cm, left=2.5cm, right=2.5cm}
 \newpage
-\section{Wstęp}
+\section*{Wstęp}
+\addcontentsline{toc}{section}{Wstęp}%
 Wraz z intensywnym w ostatnich latach rozwojem dziedziny nauczania maszynowego,
 w~przemyśle komputerowym na dobre zagościło rozpoznawanie obrazów. Stało
 się to możliwe dzięki nieustającemu postępowi technologicznemu oraz
@@ -177,11 +191,13 @@ uruchamiania.
 Ostatni rozdział zawiera wyniki predykcji sieci wraz z dyskusją co wpływa
 na osiągnięte wyniki oraz jak potencjalnie można osiągnąć ich poprawę.
 
-
+% Na zakończenie składam serdeczne podziękowania dr. Grzegorzowi Korcylowi
+% za pomoc w nakreśleniu projektu oraz cenne uwagi podczas pisania pracy.
+\restoregeometry{}
 
 \newpage
-\section{Teoria}
-\subsection{Architektura FPGA}
+\section{Teoria}\label{sec:Teoria}
+\subsection{Architektura FPGA}\label{sec:Architektura FPGA}
 Field-Programmable Gate Array (FPGA) to układy scalone, które mogą być
 elektronicznie przeprogramowane bez potrzeby demontażu samego układu
 z urządzenia. W~porównaniu do układów ASIC znacznie taniej zaprojektować
@@ -214,7 +230,7 @@ C, \CPP, SystemC. Przygotowany kod jest transpilowany poprzez odpowiedni
 kompilator HLS do języka RTL (Register-Transfer Level; język opisu sprzętu
 na poziomie bramek i~rejestrów), a~ten może być zaimplementowany na układzie.
 
-\subsection{Przetwarzanie obrazu}
+\subsection{Przetwarzanie obrazu}\label{sec:Przetwarzanie obrazu}
 Cyfrowe przetwarzanie obrazu jest problemem wymagającym dużych mocy
 obliczeniowych ze względu na ilość danych do przetworzenia. Nieskompresowany
 kolorowy obraz z~pikselami w~formacie RGB (po 8 bitów na kolor) o~wysokości
@@ -226,7 +242,7 @@ dane są dwuwymiarowe co jest ważne przy problemach związanych z~rozpoznawanie
 wzorców, klasyfikacją przedmiotów na obrazie, filtrowania w~celu rozmazania lub
 wyostrzenia obrazów, itp.
 
-\subsubsection{Formaty pikseli}
+\subsubsection{Formaty pikseli}\label{Formaty pikseli}
 Jest wiele modeli przestrzeni barw (a co za tym idzie, sposobów kodowania
 pikseli) między innymi:
 \begin{itemize}
@@ -253,7 +269,7 @@ Dla obydwóch pikseli składowe U~i~V są wspólne. Co istotne w~projekcie,
   \caption{Schemat formatu pikseli YUV2}\label{fig:yuv2}
 \end{figure}
 
-\subsection{Sieci neuronowe}
+\subsection{Sieci neuronowe}\label{sec:Sieci neuronowe}
 Sztuczna sieć neuronowa (SSN) jest modelem zdolnym do odwzorowania złożonych
 funkcji. Najprostsze sieci są zbudowane ze sztucznych neuronów, z~których każdy
 posiada wiele wejść oraz jedno wyjście, które może być połączone z~wejściami
@@ -270,9 +286,9 @@ warstwie, dzięki czemu implementacja sieci na układzie FPGA może działać
 wielokrotnie szybciej niż na CPU, pomimo niższej częstotliwości układu.
 
 \newpage
-\section{Opis projektu}
+\section{Opis projektu}\label{sec:Opis projektu}
 
-\subsection{Zarys projektu}
+\subsection{Zarys projektu}\label{sec:Zarys projektu}
 Celem projektu jest implementacja systemu do rozpoznawania cyfr
 w czasie rzeczywistym. Cel zrealizowano poprzez implementację
 wtyczki GStreamera, wykorzystującej sieć neuronową, na układzie
@@ -281,7 +297,7 @@ korzystając z~bibliotek GStreamer. Zadaniami spoczywającymi na innych
 elementach potoku jest obsługa kamery,
 kadrowanie i~skalowanie obrazu oraz wyświetlenie go na końcowym urządzeniu.
 
-\subsection{Platforma}
+\subsection{Platforma}\label{sec:Platforma}
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/place_of_work_small.jpg}
@@ -296,7 +312,7 @@ Całość projektu została oparta o~platformę Xilinx reVISION. Przetwarzane
 dane dostarczane są z~kamery USB, która była dołączona w~zestawie z~płytą Zynq.
 Urządzeniem końcowym jest telewizor połączony przewodem HDMI z~płytą.
 
-\subsection{Sieć neuronowa}
+\subsection{Sieć neuronowa}\label{sec:Siec neuronowa}
 Architektura sieci została dobrana uwzględniając dostępne zasoby programowalnej
 logiki na płycie, a~także możliwości sprzętu na którym dokonywana była jej
 synteza. Dla problemu klasyfikowania obrazów dobrze nadają się sieci
@@ -331,8 +347,8 @@ Dokonano prób trenowania sieci przetworzonymi danymi, w~których kolory były
 odwrócone, natomiast wytrenowane modele w~trakcie testów nie przekraczały
 progu czterdziestu procent dobrze zaklasyfikowanych obrazów.
 
-\subsection{hls4ml}
-\subsubsection{Idea hls4ml}
+\subsection{hls4ml}\label{sec:hls4ml}
+\subsubsection{Idea hls4ml}\label{sec:Idea hls4ml}
 Celem projektu hls4ml jest wygenerowanie kodu \CPP{} na podstawie zapisanego
 modelu z~TensorFlow. Przykładowy schemat pracy z~hls4ml przedstawiony jest
 na rysunku~\ref{fig:hls4ml}.
@@ -353,7 +369,7 @@ zasobów oznacza zrównoleglenie większej części obliczeń.
   \url{https://fastmachinelearning.org/hls4ml/CONCEPTS.html}}\label{fig:hls4ml}
 \end{figure}
 
-\subsubsection{Precyzja danych}
+\subsubsection{Precyzja danych}\label{sec:Precyzja danych}
 Typ danych używany w~przekonwertowanym modelu to duże liczby
 stałoprzecinkowe (\lstinline{ap_fixed}) oraz liczby całkowite
 (\lstinline{ap_int}).
@@ -381,7 +397,7 @@ symulacji.
 \end{figure}
 
 
-\subsection{GStreamer}
+\subsection{GStreamer}\label{sec:GStreamer}
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.95\linewidth]{figures/image_flow.png}
@@ -411,7 +427,7 @@ maksymalny rozmiar obrazu).
 parametrów mediów, takich jak rozdzielczość obrazu, format pikseli,
 ilość klatek na sekundę oraz innych.
 
-\subsubsection{xlnxvideosrc i~xlnxvideosink}
+\subsubsection{xlnxvideosrc i~xlnxvideosink}\label{sec:xlnxvideosrc i xlnxvideosink}
 Są to pluginy dostarczone przez firmę Xilinx wraz z~platformą reVISION.
 Obydwa korzystają biblioteki Xilinx \lstinline{video_lib}
 Pierwszy z~nich ułatwia odczytywanie danych ze źródeł, dla których potrzebne
@@ -424,36 +440,36 @@ Xlnxvideosink również jest oparty o~inny element --- kmssink.
 Zapewnia odpowiednią konfigurację połączenia z~wyświetlaczami
 podłączonymi przez HDMI oraz DisplayPort.
 
-\subsubsection{videoconvert}
+\subsubsection{videoconvert}\label{sec:videoconvert}
 Element mający za zadanie dostosować wszystkie parametry obrazu tak,
 aby móc połączyć ze sobą dwa niekompatybilne pod względem „caps” elementy.
 Ta niekompatybilność może być spowodowana na przykład tym, że dwie
 wtyczki potrzebują innego formatu pikseli i~jednocześnie nie oferują
 możliwości konwersji z~jednego formatu na inny.
 
-\subsubsection{videocrop}
+\subsubsection{videocrop}\label{sec:videocrop}
 Wtyczka służąca do wykadrowania obrazu w~zdefiniowanym obszarze.
 Wykorzystana została aby otrzymać obraz o~tej samej długości
 i szerokości wynoszącej 224 (co jest ośmiokrotnością 28, czyli
 długością boku obrazów, którymi wytrenowana została sieć) wycięty
 ze środka wideo o~rozmiarze 1920\(\times \)1080.
 
-\subsubsection{videoscale}
+\subsubsection{videoscale}\label{sec:videoscale}
 Skaluje obraz do wynegocjowanych pomiędzy sąsiadującymi elementami
 parametrów, przy czym pierwsza próba negocjacji to ta sama wielkość
 obrazu przy ujściu jak i~w~źródle, aby skalowanie nie było potrzebne.
 
-\subsubsection{sdxnet}
+\subsubsection{sdxnet}\label{sec:sdxnet}
 Sdxnet to wtyczka wykorzystująca sieć neuronową do rozpoznania cyfr
 znajdujących się na obrazie przez nią przechodzącym. Element ten został
 zaimplementowany na potrzeby tego projektu.
 
-\subsubsection{Filter caps}
+\subsubsection{Filter caps}\label{sec:Filter caps}
 Element precyzujący parametry obrazu, które wymuszają
 dostosowanie się poprzedniego elementu --- na przykład videoscale.
 Zapisuje się go w~postaci ciągu znaków ujętych w~cudzysłów.
 
-\subsubsection{videobox}
+\subsubsection{videobox}\label{sec:videobox}
 Oferuje możliwość osadzenia obrazu w~tym o~innym rozmiarze
 rozmiarze wypełniając pozostałą przestrzeń ramką
 w wybranym kolorze. Własność autocrop oznacza automatyczne obliczenie
@@ -461,7 +477,7 @@ wielkości ramek na podstawie parametrów określonych przez kolejny element tak
 aby obraz przychodzący do videobox był wycentrowany a~ramki
 były tej samej wielkości.
 
-\subsubsection{fpsdisplaysink}
+\subsubsection{fpsdisplaysink}\label{sec:fpsdisplaysink}
 Wtyczka typu sink (mająca tylko ujście), która jako parametr
 pobiera inną wtyczkę tego typu, np.~xlnxvideosink,
 zastępując w~grafie tamtą.
@@ -469,8 +485,8 @@ Jej użycie pozwala na sprawdzenie liczby klatek na sekundę
 wyświetlanego obrazu.
 
 
-\subsection{Używanie sieci}
-\subsubsection{Generowanie projektu}
+\subsection{Używanie sieci}\label{sec:Uzywanie sieci}
+\subsubsection{Generowanie projektu}\label{sec:Generowanie projektu}
 Architekturę sieci wraz z~wagami zapisano do pliku h5. Stworzono
 plik konfiguracyjny hls4ml. Następnie na jego podstawie wygenerowano projekt
 z przekonwertowaną siecią. Wśród wygenerowanych plików znajduje się
@@ -495,11 +511,11 @@ obliczone predykcje.
 ]{listings/nn.h}
 \end{minipage}
 
-\subsubsection{Interfejs}
+\subsubsection{Interfejs}\label{sec:Interfejs}
 Aby móc korzystać z~sieci w~aplikacji uruchamianej na procesorze ARM
 zadeklarowano użycie interfejsu IO \mbox{AXI-4} Lite.
 
-\subsubsection{Dostosowanie sieci}
+\subsubsection{Dostosowanie sieci}\label{sec:Dostosowanie sieci}
 W celu poprawienia wyników działania sieci dokonano pewnych usprawnień.
 Sieć została wytrenowana oryginalnymi danymi, w~których piksele tworzące
 cyfry mają wartości równe 255 lub tej wartości bliskie,
@@ -568,7 +584,7 @@ dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
 \end{figure}
 
 \newpage
-\subsection{Implementacja pluginu sdxnet}
+\subsection{Implementacja pluginu sdxnet}\label{sec:Implementacja pluginu sdxnet}
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth,
@@ -589,7 +605,7 @@ jako plugin GStreamer, można więc z niej korzystać przy budowaniu
 grafów za pomocą GStreamera. Schemat wykonywania kodu przedstawiony jest
 na rysunku~\ref{fig:code-scheme} na stronie~\pageref{fig:code-scheme}.
 
-\subsubsection{neuralnet}
+\subsubsection{neuralnet}\label{sec:neuralnet}
 Dane obrazu (kanał luminacji i kanał chrominacji)
 przechowywane są w~obiektach klasy \lstinline{xf::Mat} będącej
 częścią bibliotek xfOpenCV. Określona jest wysokość oraz szerokość obrazu,
@@ -618,7 +634,7 @@ kopiuje otrzymane predykcje do tablicy otrzymanej z \lstinline{gstsdxnet}.
 Przy kompilacji biblioteki należy dołączyć bibliotekę statyczną
 powstałą w procesie opisanym w rozdziale~\ref{section:create_library}.
 
-\subsubsection{gstsdxnet}
+\subsubsection{gstsdxnet}\label{sec:gstsdxnet}
 Framework GStreamer jest w stanie rozpoznać bibliotekę \lstinline{gstsdxnet}
 dzięki napisaniu funkcji spełniających wymagania stawiane przez framework.
 Obejmują one inicjalizację pluginu (m.in.~alokacja pamięci, zdefiniowanie
@@ -646,7 +662,7 @@ z platformą reVISION \mbox{2018-3} przez Xilinx.
 \end{figure}
 
 
-\subsection{Uruchamianie}
+\subsection{Uruchamianie}\label{sec:Uruchamianie}
 Aby uruchomić pipeline przedstawiony na rysunku~\ref{fig:pipeline}
 można skorzystać z narzędzia \lstinline{gst-launch-1.0}.
 Narzędzie ułatwia i przyspiesza uruchamianie różnych strumieni
@@ -667,23 +683,23 @@ na listingu~\ref{lst:script} na stronie~\pageref{lst:script}.
 
 
 \newpage
-\section{Wyniki i~dyskusja}
+\section{Wyniki i~dyskusja}\label{sec:Wyniki i dyskusja}
 W~tym rozdziale przedstawione są wyniki prezentujące dokładność
 predykcji dokonywanych przez model na różnych etapach implementacji
 projektu zaczynając od testach w Pythonie, a~kończąc na sprawdzeniu
 działania w~pełni zaimplementowanego projektu.
 
-\subsection{Ewaulacja modelu}
+\subsection{Ewaulacja modelu}\label{sec:Ewaulacja modelu}
 Do testów w Pythonie użyto 10000 próbek z~bazy MNIST, którymi nie
 wytrenowano modelu. Osiągnięta dokładność wynosi 92,22\%. 
 
-\subsection{Symulacja}
+\subsection{Symulacja}\label{sec:Symulacja}
 Kolejne testy przeprowadzono po konwersji modelu sieci do kodu \CPP{}
 przez hls4ml. Danymi testowymi były te same próbki z bazy MNIST.
 Liczba dobrze sklasyfikowanych cyfr spadła --- osiągnięto 90,52\%
 dokładności.
 
-\subsection{Dane rzeczywiste}
+\subsection{Dane rzeczywiste}\label{sec:Dane rzeczywiste}
 Kompletny projekt przetestowano na zbiorze liczącym 20 cyfr (patrz
 rys.~\ref{fig:test_data}). Cyfry
 zapisano odręcznie czarnym markerem na białym papierze. Dla każdej z nich
@@ -696,7 +712,7 @@ dokonano pomiarów, a uzyskane wyniki zapisano w~tabeli~\ref{tab:results}.
 \end{figure}
 
 
-\subsubsection{Tabela z wynikami}
+\subsubsection{Tabela z wynikami}\label{sec:Tabela z wynikami}
 Dla każdej z cyfr wykonano kilkadziesiąt odczytów. W tabeli~\ref{tab:results}
 podane są najistotniejsze z nich.
 Pierwsza kolumna oznacza rzeczywistą cyfrę. W kolumnach „zestaw A” i „zestaw B”
@@ -779,7 +795,7 @@ Zauważono, że przy kilku próbkach, szczególnie dla cyfry „5”,
 najmniejsze poruszenie kamery
 wynikające z niestabilności ręki wpływało w znacznym stopniu na predykcję.
 
-\subsection{Dyskusja}
+\subsection{Dyskusja}\label{sec:Dyskusja}
 Na każdym z etapów implementacji można zauważyć spadek dokładności sieci.
 Po przetłumaczeniu modelu sieci przez hls4ml jest to głównie spowodowane
 zmniejszeniem precyzji danych na jakich sieć dokonuje obliczeń. 
@@ -798,9 +814,59 @@ wspomnianych powodów nie wykorzystano takiej architektury.
 
 
 \newpage
-\section{Podsumowanie}
-W projekcie zostało zrobione to i~to. Wyszło to tak i~tak. Problem sprawiło
-tamto i~owamto. Można to poprawić w~ten sposób. Można część funkcjonalności
-z pipeline przenieść na fpga (w końcu przetwarzanie obrazu na fpga jest szybkie)
+\newgeometry{top=4cm, left=2.5cm, right=2.5cm}
+\section*{Podsumowanie}
+\addcontentsline{toc}{section}{Podsumowanie}%
+Celem pracy był projekt, który pozwala na
+rozpoznawanie cyfr w czasie rzeczywistym, korzystając z modelu sieci
+neuronowej zaimplementowanej na układzie FPGA. Całość można określić jako
+GStreamer pipeline, spośród którego elementów można wyróżnić wtyczkę
+do rozpoznawania cyfr, korzystającą z sieci neuronowej, wtyczki odpowiadające
+za wstępne przetworzenie obrazu oraz te, które umożliwiają wyświetlenie obrazu
+na urządzeniu zewnętrznym.
+
+W rozdziale~\ref{sec:Teoria} została przedstawiona teoria przydatna
+do zrozumienia projektu. Opisana została architektura FPGA
+w~rozdziale~\ref{sec:Architektura FPGA}, informacje o~przetwarzaniu
+obrazu (\ref{sec:Przetwarzanie obrazu}) w tym opis użytego formatu pikseli
+oraz krótki opis jak działają sieci neuronowe (\ref{sec:Sieci neuronowe}).
+
+Przedstawiono również sam projekt zaczynając od ogólnego
+zarysu (\ref{sec:Zarys projektu}), pokazania platformy z której korzystano
+(\ref{sec:Platforma}) i prezentacji architektury sieci (\ref{sec:Siec neuronowa}).
+Następnie przybliżono frameworki hls4ml (\ref{sec:hls4ml})
+i GStreamer (\ref{sec:GStreamer}). Został opisany i przedstawiony
+również sam GStreamer pipeline
+w~rozdziałach~\ref{sec:xlnxvideosrc i xlnxvideosink}--\ref{sec:fpsdisplaysink}.
+
+Przybliżony został proces implementacji modelu sieci na FPGA
+w~rozdziale~\ref{sec:Uzywanie sieci}, gdzie opisano jak dostosować kod będący
+wynikiem działania hls4ml do poprawnego działania z resztą projektu
+oraz w jaki sposób utworzyć z niej bibliotekę dzieloną, z której można
+korzystać w projektach SDSoC.
+
+Ostatnie podrozdziały rozdziału~\ref{sec:Opis projektu} dotyczą
+wykorzystania utworzonej biblioteki dzielonej w implementacji wtyczki
+GStreamer. Proces tworzenia został podzielony na dwie części (neuralnet,
+patrz~\ref{sec:neuralnet} i gstsdxnet --- \ref{sec:gstsdxnet}), aby
+w~logiczny sposób oddzielić od siebie potrzebne funkcjonalności.
+
+Na samym końcu zaprezentowano otrzymane wyniki na różnych etapach
+implementacji sieci neuronowej: jako model w Pythonie, w trakcie symulacji
+komputerowej przed syntezą oraz po pełnej implementacji, wykorzystując
+własne dane testowe (patrz rys.~\ref{fig:test_data}).
+
+W implementacji projektu jest wiele rzeczy, które można poprawić lub
+w jakiś sposób ulepszyć. Wśród nich jest wykorzystanie innej architektury
+sieci, aby otrzymać większą skuteczność rozpoznawania cyfr, przeniesienie
+części odpowiedzialnej za wstępne przetworzenie obrazu do funkcji
+akcelerowanych sprzętowo w celu poprawienia wydajności, inny sposób
+prezentacji wyniku, na przykład na wyświetlanym obrazie, kończąc
+na samym sposobie informowania użytkownika jaka część obrazu będzie
+klasyfikowana przez sieć --- wizualne oznaczenie fragmentu obrazu, zamiast
+wykadrowania reszty. Na te wszystkie poprawy zabrakło czasu, możliwości
+sprzętowych lub wiedzy dotyczącej platformy reVISION.
+
+\restoregeometry{}
 
 \end{document}
