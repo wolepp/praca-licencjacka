@@ -47,7 +47,7 @@ Continuously growing size of neural network architectures demands
 use of hardware capable of performing a lot of computations
 so the model is able to infer in real time.
 
-FPGAs are excellent for this purpose. They provide possibility for
+FPGAs are excellent for this purpose. They provide the possibility for
 massive parallel computing, so that neural network interference is done
 significantly faster than using regular CPU.
 
