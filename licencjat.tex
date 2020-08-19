@@ -16,6 +16,7 @@
 \usepackage[]{enumitem}
 \usepackage{indentfirst}
 \usepackage{textcomp}
+\usepackage{pdfpages}
 
 \usepackage[hidelinks]{hyperref}
 \hypersetup{
@@ -165,8 +166,8 @@ się to możliwe dzięki nieustającemu postępowi technologicznemu oraz
 dostępowi do coraz większej ilości zasobów komputerowych. Nowe architektury
 sieci neuronowych rosną do niewyobrażalnych kilkadziesiąt lat temu rozmiarów.
 Przy ciągle rosnącej ilości danych potrzebnych do przetworzenia w~czasie
-rzeczywistym konieczne jest zastosowanie specjalistycznego sprzętu.
-Potencjał drzemiący w~układach FPGA, w~postaci
+rzeczywistym, konieczne jest zastosowanie specjalistycznego sprzętu.
+Potencjał drzemiący w~układach FPGA w~postaci
 ogromnego zrównoleglenia obliczeń, którego nie są w~stanie zaoferować układy CPU,
 elastyczności, której nie dają układy ASIC oraz
 niskich opóźnień, których nie da się osiągnąć programując układy GPU,
@@ -174,7 +175,7 @@ można wykorzystać budując odpowiednio przygotowany model sieci.
 
 W niniejszej pracy zaimplementowano na FPGA model sieci neuronowej rozpoznającej
 cyfry. Przygotowano również część odpowiedzialną za wstępne przygotowanie
-obrazu z~kamery i~wyświetlającej go na monitorze, oraz tej przedstawiającej
+obrazu z~kamery i~wyświetlającej go na monitorze oraz tej przedstawiającej
 wyniki na terminalu komputera.
 
 Praca składa się ze wstępu, trzech rozdziałów podsumowania oraz bibliografii.
@@ -192,8 +193,8 @@ dotyczące uruchamiania.
 Ostatni rozdział zawiera wyniki predykcji sieci wraz z~dyskusją co wpływa
 na te osiągnięte oraz na jakie sposoby można potencjalnie uzyskać ich poprawę.
 
-% Na zakończenie składam serdeczne podziękowania dr. Grzegorzowi Korcylowi
-% za pomoc w~nakreśleniu projektu oraz cenne uwagi podczas pisania pracy.
+Na zakończenie składam serdeczne podziękowania dr. Grzegorzowi Korcylowi
+za pomoc w~nakreśleniu projektu oraz cenne uwagi podczas pisania pracy.
 \restoregeometry{}
 
 \newpage
@@ -240,7 +241,7 @@ liczbę o~liczbę klatek na sekundę (przy trzydziestu klatkach na sekundę licz
 danych rośnie do około 79 megabajtów na sekundę). Należy również pamiętać, że
 dane są dwuwymiarowe co jest ważne przy problemach związanych z~rozpoznawaniem
 wzorców, klasyfikacją przedmiotów na obrazie, filtrowania w~celu rozmazania lub
-wyostrzenia obrazów, itp.
+wyostrzenia obrazów itp.
 
 \subsubsection{Formaty pikseli}\label{Formaty pikseli}
 Jest wiele modeli przestrzeni barw (a co za tym idzie, sposobów kodowania
@@ -254,14 +255,14 @@ pikseli) między innymi:
 \end{itemize}
 Składowe dwóch ostatnich przestrzeni barw oddzielają informację o~jasności
 od informacji o~kolorach. Model barw YUV składa się z~kanału luminacji~Y
-oraz kanałów kodujących barwę U oraz V, są to kolejno składowa niebieska
-i składowa czerwona. w~projekcie użyty jest format pikseli YUY2 (znany też
+i~kanałów kodujących barwę U oraz V, są to kolejno składowa niebieska
+i składowa czerwona. W~projekcie użyty jest format pikseli YUY2 (znany też
 pod nazwą YUYV), w~którym na dwa piksele przypadają 32 bity.
-Licząc od najstarszego bitu pierwsze osiem bitów przypada na Y0 (patrz
+Licząc od najstarszego bitu, pierwsze osiem bitów przypada na Y0 (patrz
 rys.~\ref{fig:yuv2}), to jest
-luminacja pierwszego piksela, następne osiem bitów na U0, kolejne osiem bitów
-to luminacja drugiego piksela, a~pozostałe bity to składowa czerwona V0.
-Dla obydwóch pikseli składowe U~i~V są wspólne. Co istotne w~projekcie,
+luminacja pierwszego piksela; następne osiem bitów na U0; kolejne osiem bitów
+to luminacja drugiego piksela; pozostałe bity to składowa czerwona V0.
+Dla obydwóch pikseli składowe U~i~V są wspólne. Co istotne w~projekcie
 łatwo oddzielić luminację, która jest używana w~przetwarzaniu obrazu.
 \begin{figure}[h]
   \centering
@@ -291,7 +292,7 @@ wielokrotnie szybciej niż na CPU, pomimo niższej częstotliwości układu.
 \subsection{Zarys projektu}\label{sec:Zarys projektu}
 Celem projektu jest implementacja systemu do rozpoznawania cyfr
 w czasie rzeczywistym. Cel zrealizowano poprzez implementację
-wtyczki GStreamera, wykorzystującej sieć neuronową, na układzie
+wtyczki GStreamera, wykorzystującej sieć neuronową na układzie
 Xilinx Zynq MPSoC oraz stworzenie odpowiedniego potoku danych
 korzystając z~bibliotek GStreamer. Zadaniami spoczywającymi na innych
 elementach potoku jest obsługa kamery,
@@ -304,6 +305,7 @@ kadrowanie i~skalowanie obrazu oraz wyświetlenie go na końcowym urządzeniu.
   \caption{Stanowisko testowe}\label{fig:stanowisko}
 \end{figure}
 Sprzęt wykorzystany w~projekcie to Xilinx Zynq UltraScale+ MPSoC ZCU104.
+\linebreak
 Na jednym układzie znajduje się czterordzeniowy procesor
 ARM \mbox{Cortex-A53},
 dwurdzeniowy procesor ARM \mbox{Cortex-R5},
@@ -313,6 +315,7 @@ Przetwarzane
 dane dostarczane są z~kamery USB, która była dołączona w~zestawie z~płytą Zynq.
 Urządzeniem końcowym jest telewizor połączony przewodem HDMI z~płytą.
 
+\newpage
 \subsection{Sieć neuronowa}\label{sec:Siec neuronowa}
 Architektura sieci została dobrana uwzględniając dostępne zasoby programowalnej
 logiki na płycie, a~także możliwości sprzętu na którym dokonywana była jej
@@ -321,11 +324,11 @@ splotowe (konwolucyjne, ang.\ convolutional neural networks --- CNN),
 których przykładem jest popularna sieć \mbox{LeNet-5}.\cite{lecun98}
 Architektura ta zawiera zarówno w~pełni połączone warstwy
 oraz warstwy splotowe i~łączące.
-Niestety z~powodu ograniczeń sprzętowych w~pracy nie została użyta ta
+Niestety, z~powodu ograniczeń sprzętowych, w~pracy nie została użyta ta
 architektura.
 
 Model wykorzystany w~projekcie posiada 2 warstwy ukryte, posiadające kolejno
-12 i~40 neuronów aktywowanych funkcją ReLU, i~warstwy wyjściowej złożonej
+12 i~40 neuronów aktywowanych funkcją ReLU oraz warstwy wyjściowej złożonej
 z 10 neuronów z~funkcją aktywacji softmax.
 \begin{figure}[h]
 \hspace{2cm}
@@ -348,6 +351,7 @@ Dokonano prób trenowania sieci przetworzonymi danymi, w~których kolory były
 odwrócone, natomiast wytrenowane modele w~trakcie testów nie przekraczały
 progu czterdziestu procent dobrze zaklasyfikowanych obrazów.
 
+\newpage
 \subsection{hls4ml}\label{sec:hls4ml}
 \subsubsection{Idea hls4ml}\label{sec:Idea hls4ml}
 Celem projektu hls4ml jest wygenerowanie kodu \CPP{} na podstawie zapisanego
@@ -376,14 +380,14 @@ stałoprzecinkowe (\lstinline{ap_fixed}) oraz liczby całkowite
 (\lstinline{ap_int}).
 Precyzję obu typów można ustalić do jednego bita.
 Obliczenia przeprowadzane na liczbach o~mniejszej
-precyzji są umożliwiają większe zrównoleglenie obliczeń,
+precyzji umożliwiają większe zrównoleglenie obliczeń,
 natomiast zbyt niska precyzja może poskutkować
 bezużytecznością zsyntetyzowanej sieci. Aby odpowiednio dobrać precyzję
-wag skorzystano z~pythonowej biblioteki hls4ml.profiling.
+wag, skorzystano z~pythonowej biblioteki hls4ml.profiling.
 
 Program korzystający z~funkcji dostarczanych przez tę bibliotekę
 analizuje plik konfiguracyjny yml oraz model z~pliku h5.
-Wynikiem działania programu jest wykres przedstawiający
+Wynikiem działania programu jest wykres (patrz rys.~\ref{fig:weights_dist}) przedstawiający
 rozkład wartości wag każdej z~warstw modelu otrzymanych w~procesie trenowania.
 Szare pole w~tle wykresu
 przedstawia zakres wartości, które obejmowane są przez precyzję określoną
@@ -404,18 +408,14 @@ symulacji.
   \includegraphics[width=0.95\linewidth]{figures/image_flow.png}
   \caption{Schemat logiczny przetwarzania obrazu}\label{fig:image_flow}
 \end{figure}
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.9\linewidth]{figures/pipeline.png}
-  \caption{Schemat grafu. Na zielono plugin z~siecią neuronową}\label{fig:pipeline}
-\end{figure}
+
 Zsyntetyzowana sieć jest częścią projektu. Potrzebne jest również dostarczenie
 danych do sieci oraz przedstawienie wyniku.
 Do tego celu skorzystano z~frameworka GStreamer, dzięki któremu można
 tworzyć grafy z~komponentów (pluginów, elementów)
 przetwarzających media, zarówno audio jak i~video.
 Każdy z~elementów grafu składa się z~co najmniej jednego źródła (source),
-lub ujścia (sink), może mieć również wiele wejść i~wyjść. w~grafie pierwszy
+lub ujścia (sink), może mieć również wiele wejść i~wyjść. W~grafie pierwszy
 element nie może mieć wejść, natomiast konieczne jest aby posiadał co najmniej
 jedno wyjście. Poprawnie przygotowany graf nie powinien mieć komponentów
 oferujących źródło, które nie są z~niczym połączone.
@@ -432,15 +432,21 @@ własną implementacją) są dostępne wraz z~instalacją GStreamera.
 
 \subsubsection{xlnxvideosrc i~xlnxvideosink}\label{sec:xlnxvideosrc i~xlnxvideosink}
 Są to pluginy dostarczone przez firmę Xilinx wraz z~platformą reVISION.
-Obydwa korzystają biblioteki Xilinx \lstinline{video_lib}
+Obydwa korzystają biblioteki Xilinx \lstinline{video_lib}.
 Pierwszy z~nich ułatwia odczytywanie danych ze źródeł, dla których potrzebne
 byłyby dodatkowe działania. Są to między innymi kamera USB (użyta w~projekcie),
 HDMI, MIPI CSI (sprzętowy interfejs do transmisji obrazów i~wideo).
 Sam element zbudowany jest w~oparciu o~element v4l2src\cite[s.33]{ug1221}, dostępny
-w standardowej instalacji GStreamera.
-Xlnxvideosink również jest oparty o~inny element --- kmssink.
+w~standardowej instalacji GStreamera.
+Xlnxvideosink również jest oparty o~inny element --- kmssink\cite[s.33]{ug1221}.
 Zapewnia odpowiednią konfigurację połączenia z~wyświetlaczami
 podłączonymi przez HDMI oraz DisplayPort.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/pipeline.png}
+  \caption{Schemat grafu. Na zielono plugin z~siecią neuronową}\label{fig:pipeline}
+\end{figure}
 
 \subsubsection{videoconvert}\label{sec:videoconvert}
 Element mający za zadanie dostosować wszystkie parametry obrazu tak,
@@ -472,7 +478,7 @@ dostosowanie się poprzedniego elementu --- na przykład videoscale.
 Zapisuje się go w~postaci ciągu znaków ujętych w~cudzysłów.
 
 \subsubsection{videobox}\label{sec:videobox}
-Oferuje możliwość osadzenia obrazu w~tym o~innym rozmiarze
+Oferuje możliwość osadzenia obrazu w~tym o~innym
 rozmiarze wypełniając pozostałą przestrzeń ramką
 w wybranym kolorze. Własność autocrop oznacza automatyczne obliczenie
 wielkości ramek na podstawie parametrów określonych przez kolejny element tak,
@@ -567,7 +573,7 @@ Wywołując narzędzie \lstinline{sdx_pack} należy podać plik nagłówkowy fun
 docelową nazwę biblioteki,
 ścieżkę do pliku \lstinline{component.xml} wygenerowanego podczas eksportu
 do paczki IP, mapowanie parametrów funkcji na porty modułu,
-protokół kontroli modułu, odpowiedni zegar, i~informacje
+protokół kontroli modułu, odpowiedni zegar oraz informacje
 dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
 
 \hspace{1mm}
@@ -588,13 +594,14 @@ dotyczące docelowej platformy: nazwę jej rodziny, procesora oraz systemu.
 
 \newpage
 \subsection{Implementacja pluginu sdxnet}\label{sec:Implementacja pluginu sdxnet}
-\begin{figure}
-  \centering
-  \includegraphics[width=\linewidth,
-    trim={3cm 4cm 2.5cm 3cm}, clip]
-  {figures/kod-scheme.pdf}
-  \caption{Schemat przetwarzania danych}\label{fig:code-scheme}
-\end{figure}
+
+% \begin{figure}
+%   \centering
+%   \includegraphics[width=\linewidth,
+%     trim={3cm 4cm 2.5cm 3cm}, clip]
+%   {figures/kod-scheme.pdf}
+%   \caption{Schemat przetwarzania danych}\label{fig:code-scheme}
+% \end{figure}
 Dalsza część implementacji składa się z~dwóch części.
 Pierwsza z~nich to \lstinline{neuralnet}, biblioteka statyczna, która
 odpowiada za inicjalizację i~zwolnienie pamięci dla danych, z~których
@@ -606,7 +613,7 @@ Druga część to biblioteka dzielona \lstinline{gstsdxnet}, korzystająca
 z~funkcji z~biblioteki \lstinline{neuralnet}. Biblioteka ta jest rozpoznawana
 jako plugin GStreamer, można więc z~niej korzystać przy budowaniu
 grafów za pomocą GStreamera. Schemat wykonywania kodu przedstawiony jest
-na rysunku~\ref{fig:code-scheme} na stronie~\pageref{fig:code-scheme}.
+na stronie~\pageref{appendix:code-scheme}.
 
 \subsubsection{neuralnet}\label{sec:neuralnet}
 Dane obrazu (kanał luminacji i~kanał chrominacji)
@@ -655,6 +662,8 @@ w postaci pary liczb (przewidywana cyfra, prawdopodobieństwo).
 
 Kod wtyczki oparto o~kod przykładowej wtyczki dostarczonej wraz
 z platformą reVISION \mbox{2018-3} przez Xilinx.
+
+\includepdf[pagecommand={}\label{appendix:code-scheme}]{figures/kod-scheme.pdf}
 
 \newpage
 \subsection{Uruchamianie}\label{sec:Uruchamianie}
@@ -802,10 +811,11 @@ wynikające z~niestabilności ręki wpływało w~znacznym stopniu na predykcję.
 
 \subsection{Dyskusja}\label{sec:Dyskusja}
 Na każdym z~etapów implementacji można zauważyć spadek dokładności sieci.
+\linebreak
 Po przetłumaczeniu modelu sieci przez hls4ml jest to głównie spowodowane
 zmniejszeniem precyzji danych na jakich sieć dokonuje obliczeń. 
 Na ostatnim etapie spadek związany jest z~możliwymi szumami obrazu,
-niewystarczająco dobrym nakierowaniu kamery na cyfrę, złym oświetleniu lub
+niewystarczająco dobrym nakierowaniem kamery na cyfrę, złym oświetleniem lub
 innymi zewnętrznymi przyczynami. Sieć o~tej stosunkowo małej architekturze
 może mieć problem z~rozpoznawaniem cyfr o~takim kształcie i~położeniu
 na obrazie, z~którym nie miała do czynienia w~trakcie trenowania.
@@ -868,8 +878,9 @@ części odpowiedzialnej za wstępne przetworzenie obrazu do funkcji
 akcelerowanych sprzętowo w~celu poprawienia wydajności, inny sposób
 prezentacji wyniku, na przykład na wyświetlanym obrazie, kończąc
 na samym sposobie informowania użytkownika jaka część obrazu będzie
-klasyfikowana przez sieć --- wizualne oznaczenie fragmentu obrazu, zamiast
-wykadrowania reszty. Na te wszystkie poprawy zabrakło czasu, możliwości
+klasyfikowana przez sieć --- wizualne oznaczenie fragmentu obrazu zamiast
+wykadrowania reszty. Na wszystkie wyżej
+wymienione poprawy zabrakło czasu, możliwości
 sprzętowych lub wiedzy dotyczącej platformy reVISION.
 
 \restoregeometry{}
