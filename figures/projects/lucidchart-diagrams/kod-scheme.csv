@@ -1,0 +1,78 @@
+Id,Name,Shape Library,Page ID,Contained By,Group,Line Source,Line Destination,Source Arrow,Destination Arrow,Text Area 1
+1,Page,,,,,,,,,Page 1
+2,Text,Standard,1,,,,,,,Inicjalizacja pluginu
+3,Process,Flowchart Shapes,1,,,,,,,read_ net_ input
+4,Process,Flowchart Shapes,1,,,,,,,write_ net_ output
+5,Process,Flowchart Shapes,1,,,,,,,nn
+6,Text,Standard,1,,,,,,,gstsdxnet
+7,Text,Standard,1,,,,,,,neuralnet
+8,Text,Standard,1,,,,,,,funkcje akcelerowane
+9,Text,Standard,1,,,,,,,"gst_sdx_net_set_caps(...) {
+	...
+
+	net_init_sds(height,
+		width, pixel_form, 		data_pointer)
+
+
+
+	...
+}"
+10,Text,Standard,1,,,,,,,"net_init_sds(..., data_pointer) {
+	struct * data = malloc(...)
+	data->luma = new xf::Mat...
+	...
+	*data_pointer = data
+}"
+11,Text,Standard,1,,,,,,,"gst.._process_frames( 	*in_frame, *out_frame, 	...) {
+	...
+	net_sds_read( 		in_frame_data,
+		data_pointer, ...)
+"
+12,Text,Standard,1,,,,,,,"net_sds_read(*in_frame_data, 
+	*data, ...) {
+	...
+	read_net_input(
+		in_frame_data,
+		data->luma,
+		data->uv, ...)
+}"
+13,Text,Standard,1,,,,,,,"	net_sds_predict(
+		predictions_pointer,
+		data_pointer)
+"
+14,Text,Standard,1,,,,,,,"net_sds_predict(*predictions,
+	*data) {
+	... 	nn(data->luma, predictions)
+	..
+}"
+15,Text,Standard,1,,,,,,,"	net_sds_write( 		out_frame_data,
+		data_pointer, ...)
+
+
+	...
+
+
+
+}"
+16,Text,Standard,1,,,,,,,"net_sds_write(*out_frame_data, 	*data, ...) {
+	...
+	write_net_output(
+		data->luma,
+		data->uv,
+		out_frame_data...)
+}"
+17,Text,Standard,1,,,,,,,"	digit, prob =
+	get_max(predictions_pointer)
+
+	printf(""%d %f"", digit, prob)"
+18,Text,Standard,1,,,,,,,Przetwarzanie klatki obrazu
+19,Custom Shape,Geometric Shapes,1,,,,,,,
+20,Custom Shape,Geometric Shapes,1,,,,,,,
+21,Custom Shape,Geometric Shapes,1,,,,,,,
+22,Custom Shape,Geometric Shapes,1,,,,,,,
+23,Custom Shape,Geometric Shapes,1,,,,,,,
+24,Custom Shape,Geometric Shapes,1,,,,,,,
+25,Custom Shape,Geometric Shapes,1,,,,,,,
+26,Line,,1,,,,,None,None,
+27,Line,,1,,,,,None,None,
+28,Line,,1,,,,,None,None,

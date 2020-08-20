@@ -1,0 +1,51 @@
+Id,Name,Shape Library,Page ID,Contained By,Group,Line Source,Line Destination,Source Arrow,Destination Arrow,Text Area 1
+1,Page,,,,,,,,,Page 1
+2,Rectangle,Geometric Shapes,1,,42,,,,,
+3,Text,Standard,1,,42,,,,,ZCU104
+4,Rectangle,Geometric Shapes,1,,43,,,,,
+5,Text,Standard,1,,43,,,,,Programmable Logic (PL)
+6,Rectangle,Geometric Shapes,1,,44,,,,,
+7,Text,Standard,1,,44,,,,,Processing System (PS)
+8,Rectangle,Geometric Shapes,1,,45,,,,, 
+9,Text,Standard,1,,45,,,,,Pamięć DDR
+10,SVGPathBlock2,,1,,46,,,,,
+11,Text,Standard,1,,,,,,,"Wyjście
+HDMI"
+12,Text,Standard,1,,,,,,,Źródło USB (UVC)
+13,Process,Flowchart Shapes,1,,,,,,,USB
+14,Process,Flowchart Shapes,1,,,,,,,Bufor wideo
+15,Rectangle,Geometric Shapes,1,,,,,,,ARM Cortex-A53
+16,Rectangle,Geometric Shapes,1,,47,,,,,
+17,Process,Flowchart Shapes,1,,47,,,,,HDMI Tx
+18,Text,Standard,1,,47,,,,,Wbudowane akceleratory
+19,Rectangle,Geometric Shapes,1,,48,,,,,
+20,Process,Flowchart Shapes,1,,48,,,,,neuralnet
+21,Text,Standard,1,,48,,,,,Własne akceleratory
+22,SVGPathBlock2,,1,,49,,,,,
+23,Process,Flowchart Shapes,1,,,,,,,Bufor wideo
+24,Process,Flowchart Shapes,1,,,,,,,Bufor wideo
+25,Process,Flowchart Shapes,1,,,,,,,Bufor wideo / klatek
+26,Line,,1,,,17,10,None,Arrow,
+27,Line,,1,,,10,11,None,Arrow,
+28,Line,,1,,,12,22,None,Arrow,
+29,Line,,1,,,22,13,None,Arrow,
+30,Line,,1,,,25,17,None,Arrow,
+31,Line,,1,,,20,24,None,Arrow,
+32,Line,,1,,,14,15,None,Arrow,
+33,Line,,1,,,13,14,None,Arrow,
+34,Line,,1,,,15,23,None,Arrow,
+35,Line,,1,,,24,32,None,None,
+36,Line,,1,,,34,25,None,Arrow,
+37,Line,,1,,,15,6,None,Arrow,
+38,Line,,1,,,23,20,None,Arrow,
+39,Line,,1,,,37,20,None,Arrow,
+40,Line,,1,,,37,17,None,Arrow,
+41,Line,,1,,,15,13,None,Arrow,
+42,Group 1,,1,,,,,,,
+43,Group 2,,1,,,,,,,
+44,Group 3,,1,,,,,,,
+45,Group 4,,1,,,,,,,
+46,Group 5,,1,,,,,,,
+47,Group 6,,1,,,,,,,
+48,Group 7,,1,,,,,,,
+49,Group 8,,1,,,,,,,
